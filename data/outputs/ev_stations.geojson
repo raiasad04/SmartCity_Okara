@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "ev_stations",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "facility": "EV Charging Station", "rank": 1, "suitability_score": 99.4, "reason": "High suitability: near main road, accessible location, safe zone" }, "geometry": { "type": "Point", "coordinates": [ 73.641769568293554, 30.802514633923018 ] } },
+{ "type": "Feature", "properties": { "facility": "EV Charging Station", "rank": 2, "suitability_score": 98.1, "reason": "High suitability: near main road, accessible location, safe zone" }, "geometry": { "type": "Point", "coordinates": [ 73.61734568382245, 30.825147052613747 ] } },
+{ "type": "Feature", "properties": { "facility": "EV Charging Station", "rank": 3, "suitability_score": 98.0, "reason": "High suitability: near main road, accessible location, safe zone" }, "geometry": { "type": "Point", "coordinates": [ 73.646261343054675, 30.827033403334717 ] } },
+{ "type": "Feature", "properties": { "facility": "EV Charging Station", "rank": 4, "suitability_score": 97.1, "reason": "High suitability: near main road, accessible location, safe zone" }, "geometry": { "type": "Point", "coordinates": [ 73.651876289117965, 30.670854340732131 ] } },
+{ "type": "Feature", "properties": { "facility": "EV Charging Station", "rank": 5, "suitability_score": 96.9, "reason": "High suitability: near main road, accessible location, safe zone" }, "geometry": { "type": "Point", "coordinates": [ 73.669155157706967, 30.840195767416144 ] } }
+]
+}

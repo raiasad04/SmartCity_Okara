@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "waste_hubs",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "facility": "IoT Waste Hub", "rank": 1, "suitability_score": 100.0, "reason": "High suitability: near residential areas, good road access" }, "geometry": { "type": "Point", "coordinates": [ 73.872009017642469, 30.341591221591568 ] } },
+{ "type": "Feature", "properties": { "facility": "IoT Waste Hub", "rank": 2, "suitability_score": 100.0, "reason": "High suitability: near residential areas, good road access" }, "geometry": { "type": "Point", "coordinates": [ 73.759381130050542, 30.973497576317779 ] } },
+{ "type": "Feature", "properties": { "facility": "IoT Waste Hub", "rank": 3, "suitability_score": 99.9, "reason": "High suitability: near residential areas, good road access" }, "geometry": { "type": "Point", "coordinates": [ 73.657202967656971, 31.082266580740608 ] } },
+{ "type": "Feature", "properties": { "facility": "IoT Waste Hub", "rank": 4, "suitability_score": 99.9, "reason": "High suitability: near residential areas, good road access" }, "geometry": { "type": "Point", "coordinates": [ 73.711580233486728, 30.858681875165583 ] } },
+{ "type": "Feature", "properties": { "facility": "IoT Waste Hub", "rank": 5, "suitability_score": 99.9, "reason": "High suitability: near residential areas, good road access" }, "geometry": { "type": "Point", "coordinates": [ 73.669155157706967, 30.840195767416144 ] } }
+]
+}

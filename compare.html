@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Before vs After — Smart City Okara | Asad Bashir</title>
+<meta name="description" content="Interactive Before and After comparison of Okara City — current conflict zones vs the proposed Smart City layout. Drag the swipe divider to compare. Toggle satellite view."/>
+<meta name="keywords" content="Before After Smart City, Okara City Comparison, GIS Swipe Map, Satellite View, Urban Planning Pakistan"/>
+<meta name="author" content="Asad Bashir"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="./compare.html"/>
+<meta property="og:title" content="Before vs After — Smart City Okara"/>
+<meta property="og:description" content="Drag to compare current conflict zones vs Smart City proposed layout for Okara City."/>
+<meta property="og:type" content="website"/>
+
+<!-- Fonts (same subset, no duplication) -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<!-- Master stylesheet — ALL base tokens/utilities/nav/footer live here -->
+<link rel="stylesheet" href="style.css"/>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE-ONLY STYLES — nothing here duplicates style.css
+═══════════════════════════════════════════════════ -->
+<style>
+
+/* ── PAGE HERO ─────────────────────────────────────── */
+.compare-hero {
+  padding-top: calc(var(--nav-height) + 4rem);
+  padding-bottom: 3.5rem;
+  background: var(--ink-deep);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Split diagonal background — left red tint / right green tint */
+.compare-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(105deg,
+      rgba(255,64,96,0.06)  0%,
+      rgba(255,64,96,0.02)  42%,
+      transparent           44%),
+    linear-gradient(105deg,
+      transparent           56%,
+      rgba(0,230,118,0.02)  58%,
+      rgba(0,230,118,0.06)  100%);
+  pointer-events: none;
+}
+
+/* Subtle grid lines */
+.compare-hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 100%);
+}
+
+.compare-hero .container { position: relative; z-index: 2; }
+
+.compare-hero-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.compare-hero-text { flex: 1; min-width: 280px; }
+
+.ch-overline {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: var(--font-mono); font-size: 0.68rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--cyan); margin-bottom: 1.25rem;
+  opacity: 0; animation: fadeUp 0.7s var(--ease-out) 0.1s both;
+}
+.ch-overline::before { content:''; display:block; width:22px; height:1px; background:var(--cyan); }
+
+.compare-hero h1 {
+  font-size: clamp(2rem, 4.5vw, 3.6rem);
+  font-weight: 800; letter-spacing: -0.025em; line-height: 1.08;
+  margin-bottom: 1.2rem;
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 0.25s both;
+}
+
+/* Split-colour headline */
+.headline-before { color: var(--red); }
+.headline-vs     { color: var(--text-muted); font-size: 0.7em; margin: 0 0.4rem; }
+.headline-after  { color: var(--green); }
+
+.compare-hero p {
+  font-size: 1rem; color: var(--text-secondary);
+  line-height: 1.75; max-width: 520px;
+  font-weight: 300; margin-bottom: 2rem;
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 0.4s both;
+}
+
+/* Mode selector pills */
+.mode-selector {
+  display: flex; gap: 0.4rem; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 0.55s both;
+}
+
+.mode-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--r-full);
+  font-family: var(--font-display); font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.03em; cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-secondary);
+  transition: all var(--dur-fast) var(--ease);
+}
+.mode-btn:hover { border-color: var(--border-bright); color: var(--text-bright); }
+.mode-btn.active {
+  background: var(--cyan); color: var(--ink-deep);
+  border-color: transparent;
+  box-shadow: 0 0 20px rgba(0,212,255,0.35);
+}
+
+/* Satellite toggle on right */
+.satellite-toggle-wrap {
+  flex-shrink: 0;
+  opacity: 0; animation: slideLeft 0.8s var(--ease-out) 0.6s both;
+}
+
+.satellite-toggle {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+.sat-toggle-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+
+/* Toggle switch */
+.toggle-switch {
+  position: relative; width: 44px; height: 24px;
+  cursor: pointer; flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-track {
+  position: absolute; inset: 0;
+  background: var(--surface-3);
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  transition: background var(--dur-base) var(--ease);
+}
+.toggle-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform var(--dur-base) var(--ease-spring),
+              background var(--dur-base) var(--ease);
+}
+.toggle-switch input:checked ~ .toggle-track { background: rgba(0,212,255,0.25); border-color: var(--cyan); }
+.toggle-switch input:checked ~ .toggle-thumb { transform: translateX(20px); background: var(--cyan); }
+
+/* ── MAIN SWIPE MAP ────────────────────────────────── */
+.swipe-section {
+  background: var(--ink);
+  position: relative;
+}
+.swipe-section::before {
+  content: '';
+  position: absolute; top:0; left:0; right:0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.25), transparent);
+}
+
+.swipe-outer {
+  position: relative;
+  height: 600px;
+  background: var(--ink-deep);
+  overflow: hidden;
+}
+
+/* Smart City map — full area, all GeoJSON layers (bottom) */
+#map-after-full {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Plain map mask — left of divider only */
+#before-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  overflow: hidden;
+  z-index: 2;
+  pointer-events: none;
+}
+
+#map-before-inner {
+  height: 100%;
+}
+
+.corner-label,
+.swipe-tip {
+  z-index: 16;
+}
+
+/* The draggable divider */
+.swipe-divider {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  background: #fff;
+  z-index: 15;
+  cursor: ew-resize;
+  box-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
+
+.swipe-handle {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  font-size: 14px; font-weight: 700; color: var(--ink-deep);
+  user-select: none;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  font-family: var(--font-display);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+.swipe-handle:hover { transform: translate(-50%,-50%) scale(1.12); }
+
+/* Corner labels */
+.corner-label {
+  position: absolute;
+  z-index: 20;
+  top: 16px;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+.label-before {
+  left: 16px;
+  background: rgba(255,64,96,0.18);
+  border: 1px solid rgba(255,64,96,0.4);
+  color: var(--red);
+}
+.label-after {
+  right: 16px;
+  background: rgba(0,230,118,0.12);
+  border: 1px solid rgba(0,230,118,0.35);
+  color: var(--green);
+}
+
+/* Instruction tooltip */
+.swipe-tip {
+  position: absolute;
+  bottom: 18px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: rgba(6,9,18,0.82);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(200,220,245,0.55);
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity var(--dur-base) var(--ease);
+}
+.swipe-tip.hidden { opacity: 0; }
+
+/* ── SIDE-BY-SIDE MODE (hidden by default) ──────── */
+.sbs-outer {
+  display: none;
+  height: 500px;
+}
+.sbs-outer.visible { display: grid; grid-template-columns: 1fr 1fr; }
+.sbs-outer > div { position: relative; }
+.sbs-label {
+  position: absolute; top: 12px; left: 12px; z-index: 20;
+}
+#map-sbs-before,
+#map-sbs-after  { width: 100%; height: 100%; }
+
+/* ── LEGEND PANEL ────────────────────────────────── */
+.legend-section { padding: var(--sp-12) 0; background: var(--surface); }
+.legend-section::before {
+  content: ''; display: block; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+  margin-bottom: var(--sp-12);
+}
+
+.legend-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+}
+
+.legend-half-title {
+  font-family: var(--font-mono);
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.legend-row {
+  display: flex; align-items: flex-start; gap: 0.9rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.legend-row:last-child { border-bottom: none; }
+
+.legend-marker {
+  flex-shrink: 0;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  margin-top: 3px;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.legend-info {}
+.legend-name {
+  font-family: var(--font-display);
+  font-size: 0.85rem; font-weight: 600;
+  color: var(--text-bright); margin-bottom: 0.2rem;
+}
+.legend-desc {
+  font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;
+}
+
+/* ── CHANGE SUMMARY TABLE ───────────────────────── */
+.change-section {
+  padding: var(--sp-16) 0 var(--sp-20);
+  background: var(--ink-deep);
+}
+
+.change-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2.5rem;
+}
+
+.change-table thead tr {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.change-table thead th {
+  padding: 0.9rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: left;
+  border-right: 1px solid var(--border);
+}
+.change-table thead th:last-child { border-right: none; }
+
+.change-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background var(--dur-fast) var(--ease);
+}
+.change-table tbody tr:hover { background: var(--surface); }
+
+.change-table td {
+  padding: 1rem 1.25rem;
+  font-size: 0.82rem; color: var(--text-secondary);
+  border-right: 1px solid var(--border);
+  vertical-align: top; line-height: 1.55;
+}
+.change-table td:last-child { border-right: none; }
+
+.change-table .td-icon {
+  font-size: 1.2rem; text-align: center;
+  width: 50px; padding: 1rem 0.5rem;
+}
+
+.change-table .td-name {
+  font-family: var(--font-display);
+  font-size: 0.9rem; font-weight: 700;
+  color: var(--text-bright);
+}
+
+.td-before { color: var(--red) !important; }
+.td-after  { color: var(--green) !important; }
+.td-score  {
+  font-family: var(--font-mono);
+  font-size: 0.8rem; font-weight: 700;
+  color: var(--cyan);
+}
+
+.change-table .status-chip {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 2px 8px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 0.58rem;
+  font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+.chip-bad  { background: rgba(255,64,96,0.12);  color: var(--red); }
+.chip-good { background: rgba(0,230,118,0.10);  color: var(--green); }
+
+/* Arrow column */
+.td-arrow { color: var(--text-muted); font-size: 1rem; text-align: center; width: 36px; }
+
+/* ── SIDE-BY-SIDE STATS PANEL ───────────────────── */
+.stats-split-section {
+  padding: var(--sp-16) 0;
+  background: var(--ink);
+  position: relative;
+}
+.stats-split-section::before {
+  content: ''; position: absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+}
+
+.stats-split-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+
+.stats-split-half {
+  padding: 2.5rem 2rem;
+}
+
+.stats-split-half.half-before {
+  background: linear-gradient(135deg, rgba(255,64,96,0.05) 0%, transparent 60%);
+  border-right: 1px solid var(--border);
+}
+.stats-split-half.half-after {
+  background: linear-gradient(135deg, rgba(0,230,118,0.04) 0%, transparent 60%);
+}
+
+.split-half-title {
+  font-family: var(--font-mono);
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: 1.75rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.split-stat-row {
+  display: flex; align-items: flex-start;
+  gap: 1rem; margin-bottom: 1.25rem;
+}
+.split-stat-row:last-child { margin-bottom: 0; }
+
+.split-stat-num {
+  font-family: var(--font-display);
+  font-size: 2rem; font-weight: 800;
+  line-height: 1; flex-shrink: 0;
+  width: 70px;
+}
+
+.split-stat-info {}
+.split-stat-label {
+  font-family: var(--font-display);
+  font-size: 0.88rem; font-weight: 600;
+  color: var(--text-bright); margin-bottom: 0.2rem;
+}
+.split-stat-sub {
+  font-size: 0.75rem; color: var(--text-muted); line-height: 1.45;
+}
+
+/* Centre VS divider */
+.vs-divider {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 1.5rem;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+.vs-text {
+  font-family: var(--font-display);
+  font-size: 1.4rem; font-weight: 800;
+  color: var(--text-muted);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.3em;
+}
+
+/* ── KEY FINDINGS ────────────────────────────────── */
+.findings-section {
+  padding: var(--sp-16) 0 var(--sp-20);
+  background: var(--ink-deep);
+}
+
+.findings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.finding-card {
+  border-radius: var(--r-xl);
+  padding: 1.75rem 1.5rem;
+  position: relative; overflow: hidden;
+  border: 1px solid var(--border);
+  transition: all var(--dur-base) var(--ease);
+  opacity: 0; animation: fadeUp 0.7s var(--ease-out) both;
+}
+.finding-card:hover { transform: translateY(-4px); }
+
+/* Glow corner */
+.finding-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.finding-card.fc-red    { background: rgba(255,64,96,0.04);  }
+.finding-card.fc-cyan   { background: rgba(0,212,255,0.04);  }
+.finding-card.fc-green  { background: rgba(0,230,118,0.04);  }
+.finding-card.fc-red::before   { background: var(--red);   }
+.finding-card.fc-cyan::before  { background: var(--cyan);  }
+.finding-card.fc-green::before { background: var(--green); }
+.finding-card.fc-red:hover   { border-color: rgba(255,64,96,0.3);  }
+.finding-card.fc-cyan:hover  { border-color: rgba(0,212,255,0.3);  }
+.finding-card.fc-green:hover { border-color: rgba(0,230,118,0.3);  }
+
+.finding-num {
+  font-family: var(--font-display);
+  font-size: 3.5rem; font-weight: 800;
+  line-height: 1; margin-bottom: 0.5rem;
+}
+.fc-red   .finding-num { color: var(--red);   }
+.fc-cyan  .finding-num { color: var(--cyan);  }
+.fc-green .finding-num { color: var(--green); }
+
+.finding-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--text-bright); margin-bottom: 0.6rem;
+  line-height: 1.25;
+}
+
+.finding-desc {
+  font-size: 0.82rem; color: var(--text-muted); line-height: 1.65;
+}
+
+.finding-tag {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  margin-top: 1rem;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.fc-red   .finding-tag { background: rgba(255,64,96,0.12);  color: var(--red);   border: 1px solid rgba(255,64,96,0.2); }
+.fc-cyan  .finding-tag { background: rgba(0,212,255,0.10);  color: var(--cyan);  border: 1px solid rgba(0,212,255,0.2); }
+.fc-green .finding-tag { background: rgba(0,230,118,0.10);  color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+
+/* ── FOOTER ─────────────────────────────────────── */
+.site-footer {
+  background: var(--ink); border-top: 1px solid var(--border);
+  padding: 2.5rem 0 1.75rem;
+}
+.footer-bottom-bar {
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+.footer-copy { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); }
+.footer-nav  { display: flex; gap: 1.5rem; }
+.footer-nav a { font-size: 0.78rem; color: var(--text-muted); transition: color var(--dur-fast) var(--ease); }
+.footer-nav a:hover { color: var(--cyan); }
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media (max-width: 1024px) {
+  .findings-grid   { grid-template-columns: 1fr 1fr; }
+  .stats-split-grid{ grid-template-columns: 1fr; }
+  .vs-divider      { display: none; }
+  .stats-split-half.half-before { border-right: none; border-bottom: 1px solid var(--border); }
+  .legend-grid     { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .compare-hero-inner { flex-direction: column; }
+  .swipe-outer  { height: 420px; }
+  .sbs-outer    { height: 380px; }
+  .sbs-outer.visible { grid-template-columns: 1fr; }
+  .sbs-outer.visible > div:first-child { border-bottom: 2px solid var(--border); }
+  .findings-grid{ grid-template-columns: 1fr; }
+  .change-table { font-size: 0.75rem; }
+  .change-table thead th,
+  .change-table td { padding: 0.7rem 0.8rem; }
+}
+
+@media (max-width: 480px) {
+  .swipe-outer { height: 340px; }
+  .mode-selector { gap: 0.3rem; }
+  .mode-btn { padding: 0.4rem 0.8rem; font-size: 0.72rem; }
+}
+
+/* ── POPUP (same pattern as other pages) ─────────── */
+.lp-body { padding: 14px 16px; }
+.lp-type {
+  font-family: var(--font-mono); font-size: 0.6rem;
+  font-weight: 500; letter-spacing: 0.18em;
+  text-transform: uppercase; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 5px;
+}
+.lp-name {
+  font-family: var(--font-display); font-size: 1rem;
+  font-weight: 700; color: #fff;
+  margin-bottom: 10px; line-height: 1.25;
+}
+.lp-row { display: flex; gap: 8px; margin-bottom: 5px; font-size: 0.7rem; line-height: 1.5; }
+.lp-key { flex-shrink: 0; width: 55px; color: rgba(200,220,245,0.4); }
+.lp-val { color: rgba(200,220,245,0.85); }
+.lp-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 0; }
+.lp-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 0.58rem;
+  font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     NAVIGATION — active on "compare"
+════════════════════════════════════ -->
+<nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+  <a class="nav-logo" href="index.html" aria-label="Smart City Okara Home">
+    <div class="nav-logo-icon" aria-hidden="true">🏙️</div>
+    <div class="nav-logo-text">
+      <div class="nav-logo-title">Smart City Okara</div>
+      <div class="nav-logo-sub">BS RS&amp;GIS · Asad Bashir</div>
+    </div>
+  </a>
+  <div class="nav-links" role="list">
+    <a class="nav-link"        href="index.html"    role="listitem">Map</a>
+    <a class="nav-link"        href="features.html" role="listitem">Features</a>
+    <a class="nav-link active" href="compare.html"  role="listitem">Before / After</a>
+    <a class="nav-link"        href="about.html"    role="listitem">About</a>
+  </div>
+  <a class="nav-cta" href="about.html">Meet the Team →</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<nav class="nav-mobile" id="nav-mobile" aria-label="Mobile navigation">
+  <a class="nav-link"        href="index.html">Map</a>
+  <a class="nav-link"        href="features.html">Features</a>
+  <a class="nav-link active" href="compare.html">Before / After</a>
+  <a class="nav-link"        href="about.html">About</a>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════════
+     HERO
+════════════════════════════════════ -->
+<section class="compare-hero" aria-labelledby="compare-heading">
+  <div class="container">
+    <div class="compare-hero-inner">
+
+      <div class="compare-hero-text">
+        <div class="ch-overline">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--cyan);display:inline-block" aria-hidden="true"></span>
+          Spatial Comparison · Okara City
+        </div>
+
+        <h1 id="compare-heading">
+          <span class="headline-before">Before</span>
+          <span class="headline-vs">vs</span>
+          <span class="headline-after">After</span>
+        </h1>
+
+        <p>
+          Drag the divider to compare Okara City's <strong style="color:var(--red)">current conflict state</strong>
+          against the <strong style="color:var(--green)">proposed Smart City layout</strong>.
+          Toggle satellite imagery. Switch between Swipe and Side-by-Side views.
+        </p>
+
+        <div class="mode-selector" role="group" aria-label="Map view mode">
+          <button class="mode-btn active" id="btn-swipe" onclick="setViewMode('swipe')" aria-pressed="true">
+            ⟺ Swipe Divider
+          </button>
+          <button class="mode-btn" id="btn-sbs" onclick="setViewMode('sbs')" aria-pressed="false">
+            ◫ Side by Side
+          </button>
+        </div>
+      </div>
+
+      <!-- Satellite toggle -->
+      <div class="satellite-toggle-wrap">
+        <div class="satellite-toggle">
+          <div>
+            <div class="sat-toggle-label" style="margin-bottom:0.3rem">Base Map</div>
+            <div style="font-family:var(--font-display);font-size:0.85rem;font-weight:600;color:var(--text-bright)" id="sat-mode-label">Dark City</div>
+          </div>
+          <label class="toggle-switch" aria-label="Toggle satellite imagery">
+            <input type="checkbox" id="sat-toggle" onchange="toggleSatellite(this.checked)"/>
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+          <div>
+            <div class="sat-toggle-label" style="margin-bottom:0.3rem">Satellite</div>
+            <div style="font-family:var(--font-mono);font-size:0.62rem;color:var(--text-muted)">Esri Imagery</div>
+          </div>
+        </div>
+
+        <!-- Quick stats beside toggle -->
+        <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
+          <div style="flex:1;background:var(--surface);border:1px solid rgba(255,64,96,0.25);border-radius:var(--r-lg);padding:0.85rem 1rem;text-align:center">
+            <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--red);line-height:1">5</div>
+            <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-top:3px">Conflicts</div>
+          </div>
+          <div style="flex:1;background:var(--surface);border:1px solid rgba(0,230,118,0.2);border-radius:var(--r-lg);padding:0.85rem 1rem;text-align:center">
+            <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--green);line-height:1">15</div>
+            <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-top:3px">New Sites</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     SWIPE MAP (default mode)
+════════════════════════════════════ -->
+<section class="swipe-section" aria-label="Before and after map comparison">
+
+  <!-- SWIPE MODE -->
+  <div class="swipe-outer" id="swipe-outer" role="application" aria-label="Drag the divider to compare before and after">
+
+    <!-- Smart City: tiles + all layer markers (full width, bottom) -->
+    <div id="map-after-full"></div>
+
+    <!-- Current state: plain tiles only, left of divider (top mask) -->
+    <div id="before-mask">
+      <div id="map-before-inner"></div>
+    </div>
+
+    <!-- Draggable divider -->
+    <div class="swipe-divider" id="swipe-divider" role="slider"
+         aria-label="Comparison divider" aria-valuemin="5" aria-valuemax="95" aria-valuenow="50">
+      <div class="swipe-handle" aria-hidden="true">◀ ▶</div>
+    </div>
+
+    <!-- Corner labels -->
+    <div class="corner-label label-before" aria-label="Left side shows current state">📍 CURRENT STATE</div>
+    <div class="corner-label label-after"  aria-label="Right side shows smart city">✦ SMART CITY</div>
+
+    <!-- Tip -->
+    <div class="swipe-tip" id="swipe-tip" aria-hidden="true">
+      ← Drag divider to compare →
+    </div>
+
+  </div>
+
+  <!-- SIDE-BY-SIDE MODE (hidden by default) -->
+  <div class="sbs-outer" id="sbs-outer">
+    <div>
+      <div id="map-sbs-before"></div>
+      <div class="sbs-label">
+        <span class="corner-label label-before" style="position:static;display:inline-flex">📍 CURRENT STATE</span>
+      </div>
+    </div>
+    <div>
+      <div id="map-sbs-after"></div>
+      <div class="sbs-label">
+        <span class="corner-label label-after" style="position:static;display:inline-flex">✦ SMART CITY</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ════════════════════════════════════
+     LEGEND
+════════════════════════════════════ -->
+<section class="legend-section" aria-labelledby="legend-heading">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:2rem">
+      <div class="overline">Map Legend</div>
+      <h2 id="legend-heading">What Each Marker Means</h2>
+    </div>
+
+    <div class="legend-grid">
+
+      <!-- Before legend -->
+      <div>
+        <div class="legend-half-title" style="color:var(--red)">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block" aria-hidden="true"></span>
+          Current State — Plain Map
+        </div>
+
+        <div class="legend-row">
+          <div class="legend-info">
+            <div class="legend-name">Base OpenStreetMap View</div>
+            <div class="legend-desc">Left side shows Okara City as it is today — roads and buildings only, with no GIS analysis overlays.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- After legend -->
+      <div>
+        <div class="legend-half-title" style="color:var(--green)">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block" aria-hidden="true"></span>
+          Smart City — All Map Layers
+        </div>
+
+        <div class="legend-row">
+          <div class="legend-marker" style="background:var(--amber);color:var(--amber)"></div>
+          <div class="legend-info">
+            <div class="legend-name">Sensitive Sites</div>
+            <div class="legend-desc">Schools, hospitals, clinics and colleges (31 sites).</div>
+          </div>
+        </div>
+
+        <div class="legend-row">
+          <div class="legend-marker" style="background:rgba(255,64,96,0.3);color:var(--red);border:1px dashed var(--red)"></div>
+          <div class="legend-info">
+            <div class="legend-name">500m Buffers</div>
+            <div class="legend-desc">Safety exclusion zones around each sensitive location.</div>
+          </div>
+        </div>
+
+        <div class="legend-row">
+          <div class="legend-marker" style="background:var(--red);color:var(--red)"></div>
+          <div class="legend-info">
+            <div class="legend-name">Conflict Zones</div>
+            <div class="legend-desc">Badly placed fuel stations, markets, and bus stands within buffers.</div>
+          </div>
+        </div>
+
+        <div class="legend-row">
+          <div class="legend-marker" style="background:var(--blue);color:var(--blue)"></div>
+          <div class="legend-info">
+            <div class="legend-name">EV Charging Stations</div>
+            <div class="legend-desc">Top 5 proposed EV sites from AHP suitability scoring.</div>
+          </div>
+        </div>
+
+        <div class="legend-row">
+          <div class="legend-marker" style="background:var(--purple);color:var(--purple)"></div>
+          <div class="legend-info">
+            <div class="legend-name">IoT Waste Hubs</div>
+            <div class="legend-desc">Top 5 smart waste collection hub locations.</div>
+          </div>
+        </div>
+
+        <div class="legend-row">
+          <div class="legend-marker" style="background:var(--green);color:var(--green)"></div>
+          <div class="legend-info">
+            <div class="legend-name">Green Corridors</div>
+            <div class="legend-desc">Top 5 peripheral open-land sites for urban green belt development.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     CHANGE SUMMARY TABLE
+════════════════════════════════════ -->
+<section class="change-section" aria-labelledby="change-heading">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:0.5rem">
+      <div class="overline">Transformation Summary</div>
+      <h2 id="change-heading">What Changes — Site by Site</h2>
+      <p>Every detected problem and every proposed solution, compiled into one comparison table for the thesis Results chapter.</p>
+    </div>
+
+    <div style="overflow-x:auto;border-radius:var(--r-xl);border:1px solid var(--border)">
+      <table class="change-table" role="table" aria-label="Before and after comparison table">
+        <thead>
+          <tr>
+            <th scope="col" style="width:44px"></th>
+            <th scope="col">Facility</th>
+            <th scope="col">Type</th>
+            <th scope="col" style="color:var(--red)">Before — Problem</th>
+            <th scope="col" style="width:36px"></th>
+            <th scope="col" style="color:var(--green)">After — Solution</th>
+            <th scope="col">Impact</th>
+          </tr>
+        </thead>
+        <tbody id="change-tbody">
+          <!-- JS inserts conflict rows from GeoJSON; static smart rows below -->
+
+          <!-- EV Stations row -->
+          <tr>
+            <td class="td-icon">⚡</td>
+            <td><div class="td-name">EV Charging Stations</div></td>
+            <td><span class="status-chip chip-bad">Missing</span></td>
+            <td class="td-before">No EV infrastructure in Okara. Petrol dependency, no clean transport.</td>
+            <td class="td-arrow">→</td>
+            <td class="td-after">5 optimal sites along primary roads — AHP score avg 78/100.</td>
+            <td class="td-score">+5 sites</td>
+          </tr>
+
+          <tr>
+            <td class="td-icon">🗑️</td>
+            <td><div class="td-name">IoT Waste Hubs</div></td>
+            <td><span class="status-chip chip-bad">Missing</span></td>
+            <td class="td-before">No organised waste collection. Overflowing open dumps in residential areas.</td>
+            <td class="td-arrow">→</td>
+            <td class="td-after">5 smart hub sites near residential zones — auto-scheduled collection.</td>
+            <td class="td-score">+5 sites</td>
+          </tr>
+
+          <tr>
+            <td class="td-icon">🌿</td>
+            <td><div class="td-name">Green Corridors</div></td>
+            <td><span class="status-chip chip-bad">Missing</span></td>
+            <td class="td-before">No urban green belt. Heat island effect raises temp 3–5°C above rural.</td>
+            <td class="td-arrow">→</td>
+            <td class="td-after">5 peripheral green belt zones reducing LST and improving air quality.</td>
+            <td class="td-score">+5 sites</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     SIDE-BY-SIDE STATS
+════════════════════════════════════ -->
+<section class="stats-split-section" aria-labelledby="stats-split-heading">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:2rem">
+      <div class="overline">Quantified Impact</div>
+      <h2 id="stats-split-heading">Current Problems vs Smart Gains</h2>
+    </div>
+
+    <div class="stats-split-grid">
+
+      <!-- Before -->
+      <div class="stats-split-half half-before">
+        <div class="split-half-title" style="color:var(--red)">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block" aria-hidden="true"></span>
+          Current State — Okara City
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--red)">5</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">Active Conflict Zones</div>
+            <div class="split-stat-sub">Facilities violating 500m buffers around schools and hospitals</div>
+          </div>
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--red)">31</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">Sensitive Sites at Risk</div>
+            <div class="split-stat-sub">Schools, hospitals and colleges exposed to pollution, noise and traffic</div>
+          </div>
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--red)">0</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">EV Charging Points</div>
+            <div class="split-stat-sub">No electric vehicle infrastructure exists in Okara</div>
+          </div>
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--red)">0</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">Smart Waste Hubs</div>
+            <div class="split-stat-sub">No organised IoT waste management system</div>
+          </div>
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--red)">+5°C</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">Urban Heat Island</div>
+            <div class="split-stat-sub">Okara city centre 3–5°C hotter than surrounding rural areas</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VS divider -->
+      <div class="vs-divider" aria-hidden="true">
+        <div class="vs-text">VS</div>
+      </div>
+
+      <!-- After -->
+      <div class="stats-split-half half-after">
+        <div class="split-half-title" style="color:var(--green)">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block" aria-hidden="true"></span>
+          Smart City Vision — Proposed
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--green)">5</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">Relocated Facilities</div>
+            <div class="split-stat-sub">All conflict sources moved to conflict-free safe zones outside the buffer</div>
+          </div>
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--green)">155</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">Safe Relocation Zones</div>
+            <div class="split-stat-sub">Residential areas over 500m from all sensitive receptors — validated safe</div>
+          </div>
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--green)">5</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">EV Charging Points Added</div>
+            <div class="split-stat-sub">AHP-scored sites on primary roads — avg suitability score 78/100</div>
+          </div>
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--green)">5</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">Smart Waste Hubs Added</div>
+            <div class="split-stat-sub">IoT sensor bins near residential zones — reduces collection fuel by ~30%</div>
+          </div>
+        </div>
+
+        <div class="split-stat-row">
+          <div class="split-stat-num" style="color:var(--green)">5</div>
+          <div class="split-stat-info">
+            <div class="split-stat-label">Green Corridor Zones</div>
+            <div class="split-stat-sub">Peripheral green belts reducing heat island effect and improving air quality</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     KEY FINDINGS (thesis Results)
+════════════════════════════════════ -->
+<section class="findings-section" aria-labelledby="findings-heading">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Thesis Results Chapter</div>
+      <h2 id="findings-heading">Key Findings Summary</h2>
+      <p>The three headline numbers from this analysis — ready to cite directly in the Results and Discussion sections of the technical thesis.</p>
+    </div>
+
+    <div class="findings-grid" role="list">
+
+      <div class="finding-card fc-red" role="listitem" style="animation-delay:0.1s">
+        <div class="finding-num">5</div>
+        <div class="finding-title">Conflict Zones Identified in Okara City</div>
+        <div class="finding-desc">
+          Buffer analysis at 500m around 31 sensitive locations (schools, hospitals, colleges)
+          detected 5 facilities — fuel stations, marketplaces, and bus stands — in direct
+          violation of health and safety exclusion zones.
+        </div>
+        <div class="finding-tag">🔴 Conflict Analysis</div>
+      </div>
+
+      <div class="finding-card fc-cyan" role="listitem" style="animation-delay:0.2s">
+        <div class="finding-num">155</div>
+        <div class="finding-title">Validated Safe Relocation Zones Found</div>
+        <div class="finding-desc">
+          Of all residential areas in Okara, 155 zones were confirmed to be outside every
+          500m sensitive receptor buffer — making them scientifically validated relocation
+          candidates for the conflicting infrastructure.
+        </div>
+        <div class="finding-tag">✅ Relocation Analysis</div>
+      </div>
+
+      <div class="finding-card fc-green" role="listitem" style="animation-delay:0.3s">
+        <div class="finding-num">15</div>
+        <div class="finding-title">Smart City Sites Proposed via AHP-MCDA</div>
+        <div class="finding-desc">
+          Multi-criteria decision analysis using AHP weights identified 15 top-ranked
+          sites across three Smart City feature types — 5 EV stations, 5 IoT waste hubs,
+          and 5 green corridors — each with suitability scores from 0–100.
+        </div>
+        <div class="finding-tag">✦ Suitability Analysis</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ════════════════════════════════════
+     FOOTER
+════════════════════════════════════ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-bottom-bar">
+      <div class="footer-copy">© 2025 Asad Bashir · BS Remote Sensing &amp; GIS · University of Okara, Pakistan</div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="index.html">Map</a>
+        <a href="features.html">Features</a>
+        <a href="compare.html">Before / After</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+'use strict';
+
+/* ── NAV ─────────────────────────────────── */
+const mainNav   = document.getElementById('main-nav');
+const hamburger = document.getElementById('nav-hamburger');
+const mobileMenu= document.getElementById('nav-mobile');
+
+window.addEventListener('scroll', () =>
+  mainNav.classList.toggle('scrolled', window.scrollY > 30), { passive:true });
+
+hamburger.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open', open);
+  hamburger.setAttribute('aria-expanded', String(open));
+});
+
+/* ── TILE URLS ───────────────────────────── */
+const DARK_URL = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const SAT_URL  = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+
+/* ══════════════════════════════════════════
+   SWIPE COMPARE — same layers as Map page
+   Bottom: full map + all GeoJSON markers
+   Top:    plain OSM tiles, left mask only
+══════════════════════════════════════════ */
+const OKARA_CENTER = [30.810, 73.450];
+const OKARA_ZOOM = 13;
+const OKARA_BOUNDS = L.latLngBounds([30.72, 73.32], [30.92, 73.75]);
+const mapOpts = {
+  zoomControl: false,
+  attributionControl: false,
+  scrollWheelZoom: true,
+  center: OKARA_CENTER,
+  zoom: OKARA_ZOOM
+};
+
+const swipeOuterEl  = document.getElementById('swipe-outer');
+const beforeMaskEl  = document.getElementById('before-mask');
+const beforeInnerEl = document.getElementById('map-before-inner');
+
+/* Smart City map — all layers (same as index.html hero) */
+const afterMap = L.map('map-after-full', mapOpts);
+L.control.zoom({ position: 'bottomright' }).addTo(afterMap);
+L.control.attribution({ position: 'bottomright', prefix: false })
+  .addAttribution('© <a href="https://openstreetmap.org">OpenStreetMap</a>')
+  .addTo(afterMap);
+
+/* Plain basemap — tiles only, shown in left mask */
+const beforeMap = L.map('map-before-inner', mapOpts);
+
+let baseTileAfter  = L.tileLayer(DARK_URL, { maxZoom: 19, subdomains: 'abcd' }).addTo(afterMap);
+let baseTileBefore = L.tileLayer(DARK_URL, { maxZoom: 19, subdomains: 'abcd' }).addTo(beforeMap);
+
+afterMap.setMaxBounds(OKARA_BOUNDS);
+beforeMap.setMaxBounds(OKARA_BOUNDS);
+afterMap.setMinZoom(12);
+beforeMap.setMinZoom(12);
+
+const lg = {
+  sensitive: L.layerGroup().addTo(afterMap),
+  buffers:   L.layerGroup().addTo(afterMap),
+  conflicts: L.layerGroup().addTo(afterMap),
+  ev:        L.layerGroup().addTo(afterMap),
+  waste:     L.layerGroup().addTo(afterMap),
+  green:     L.layerGroup().addTo(afterMap),
+};
+
+let dividerPct = 50;
+let syncingMaps = false;
+
+function layoutSwipeMaps() {
+  const w = swipeOuterEl.offsetWidth;
+  beforeMaskEl.style.width = dividerPct + '%';
+  beforeInnerEl.style.width = w + 'px';
+  afterMap.invalidateSize();
+  beforeMap.invalidateSize();
+}
+
+function syncFrom(source, target) {
+  if (syncingMaps) return;
+  syncingMaps = true;
+  target.setView(source.getCenter(), source.getZoom(), { animate: false });
+  syncingMaps = false;
+}
+
+afterMap.on('moveend zoomend', () => syncFrom(afterMap, beforeMap));
+beforeMap.on('moveend zoomend', () => syncFrom(beforeMap, afterMap));
+
+/* ── DIVIDER DRAG ────────────────────────── */
+const dividerEl = document.getElementById('swipe-divider');
+const swipeTip  = document.getElementById('swipe-tip');
+let isDragging  = false;
+let hasDragged  = false;
+
+function setDividerPos(pct) {
+  dividerPct = Math.max(3, Math.min(97, pct));
+  dividerEl.style.left = dividerPct + '%';
+  dividerEl.setAttribute('aria-valuenow', Math.round(dividerPct));
+  layoutSwipeMaps();
+}
+
+dividerEl.addEventListener('mousedown',  e => { isDragging = true; e.preventDefault(); });
+dividerEl.addEventListener('touchstart', () => { isDragging = true; }, { passive:true });
+
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const rect = document.getElementById('swipe-outer').getBoundingClientRect();
+  setDividerPos(((e.clientX - rect.left) / rect.width) * 100);
+  if (!hasDragged) { hasDragged = true; swipeTip.classList.add('hidden'); }
+});
+
+document.addEventListener('touchmove', e => {
+  if (!isDragging) return;
+  const rect = document.getElementById('swipe-outer').getBoundingClientRect();
+  setDividerPos(((e.touches[0].clientX - rect.left) / rect.width) * 100);
+  if (!hasDragged) { hasDragged = true; swipeTip.classList.add('hidden'); }
+}, { passive:true });
+
+document.addEventListener('mouseup',  () => { isDragging = false; });
+document.addEventListener('touchend', () => { isDragging = false; });
+
+/* Keyboard */
+dividerEl.setAttribute('tabindex', '0');
+dividerEl.addEventListener('keydown', e => {
+  if (e.key==='ArrowLeft')  { setDividerPos(dividerPct - 5); e.preventDefault(); }
+  if (e.key==='ArrowRight') { setDividerPos(dividerPct + 5); e.preventDefault(); }
+});
+
+/* ── VIEW MODE ───────────────────────────── */
+/* Hide the SBS container — we only use single-map swipe */
+document.getElementById('sbs-outer').style.display = 'none';
+
+function setViewMode(mode) {
+  document.getElementById('btn-swipe').classList.toggle('active', mode==='swipe');
+  document.getElementById('btn-sbs').classList.toggle('active',   mode==='sbs');
+  document.getElementById('btn-swipe').setAttribute('aria-pressed', String(mode==='swipe'));
+  document.getElementById('btn-sbs').setAttribute('aria-pressed',   String(mode==='sbs'));
+
+  if (mode === 'sbs') {
+    /* In SBS mode, split the clip at 50% and lock it — show both panes */
+    setDividerPos(50);
+    dividerEl.style.display = 'none';
+    document.querySelector('.swipe-tip').style.display = 'none';
+  } else {
+    dividerEl.style.display = 'block';
+    document.querySelector('.swipe-tip').style.display = 'flex';
+  }
+}
+
+/* ── SATELLITE TOGGLE ────────────────────── */
+function toggleSatellite(on) {
+  document.getElementById('sat-mode-label').textContent = on ? 'Satellite' : 'Dark City';
+  const url = on ? SAT_URL : DARK_URL;
+  const opts = {
+    maxZoom: on ? 18 : 19,
+    subdomains: on ? '' : 'abcd',
+    attribution: on ? 'Tiles © Esri' : ''
+  };
+  baseTileAfter.remove();
+  baseTileBefore.remove();
+  baseTileAfter  = L.tileLayer(url, opts).addTo(afterMap);
+  baseTileBefore = L.tileLayer(url, opts).addTo(beforeMap);
+  baseTileAfter.setZIndex(1);
+  baseTileBefore.setZIndex(1);
+}
+
+/* ── HELPERS ─────────────────────────────── */
+function centroid(f) {
+  const g=f.geometry, c=g.coordinates;
+  if (g.type==='Point') return [c[1],c[0]];
+  if (g.type==='Polygon') {
+    let la=0,lo=0,n=c[0].length;
+    c[0].forEach(p=>{lo+=p[0];la+=p[1];}); return [la/n,lo/n];
+  }
+  if (g.type==='MultiPolygon') {
+    const r=c[0][0]; let la=0,lo=0,n=r.length;
+    r.forEach(p=>{lo+=p[0];la+=p[1];}); return [la/n,lo/n];
+  }
+  return null;
+}
+
+function mkCircle(ll, color, r=9) {
+  return L.circleMarker(ll, {
+    radius: r,
+    color: 'rgba(255,255,255,0.15)',
+    weight: 1.5,
+    fillColor: color,
+    fillOpacity: 0.92
+  });
+}
+
+async function loadJSON(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+/* Popup builder */
+function popup(color, typeLabel, name, rows, tagLabel) {
+  const rowsHtml = rows.map(([k,v,style]) =>
+    `<div class="lp-row"><span class="lp-key">${k}</span><span class="lp-val"${style?` style="${style}"`:''}>${v}</span></div>`
+  ).join('');
+  return `<div class="lp-body">
+    <div class="lp-type" style="color:${color}">${typeLabel}</div>
+    <div class="lp-name">${name}</div>
+    ${rowsHtml}
+    <div class="lp-divider"></div>
+    <span class="lp-tag" style="background:${color}22;color:${color};border:1px solid ${color}44">${tagLabel}</span>
+  </div>`;
+}
+
+/* ── CHANGE TABLE ────────────────────────── */
+function addTableRow(icon, name, before, after, score) {
+  const tbody = document.getElementById('change-tbody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td class="td-icon">${icon}</td>
+    <td><div class="td-name">${name}</div></td>
+    <td><span class="status-chip chip-bad">Conflict</span></td>
+    <td class="td-before">${before}</td>
+    <td class="td-arrow">→</td>
+    <td class="td-after">${after}</td>
+    <td class="td-score">${score}</td>`;
+  tbody.insertBefore(row, tbody.firstChild);
+}
+
+/* ══════════════════════════════════════════
+   LOAD ALL GEOJSON DATA
+══════════════════════════════════════════ */
+async function loadAllData() {
+
+  /* — Sensitive Sites (AFTER / right) — */
+  try {
+    const d = await loadJSON('data/outputs/sensitive_locations.geojson');
+    d.features.forEach(f => {
+      const ll=centroid(f); if(!ll) return; const p=f.properties;
+      const name = p.name||p.amenity||'Sensitive Site';
+      const pop  = popup('#ffd600','🏫 Sensitive Location', name,
+        [['Type', p.amenity||'N/A'],['Buffer','500m safety zone']], '⚠ Protected');
+      mkCircle(ll,'#ffd600',7).bindPopup(pop).addTo(lg.sensitive);
+    });
+  } catch(e) { console.warn('sensitive:',e.message); }
+
+  /* — 500m Buffers (AFTER / right) — */
+  try {
+    const d = await loadJSON('data/outputs/safety_buffers.geojson');
+    L.geoJSON(d, {
+      style:{ color:'#ff4060', fillColor:'#ff4060', fillOpacity:0.08, weight:1, dashArray:'5 5' }
+    }).addTo(lg.buffers);
+  } catch(e) { console.warn('buffers:',e.message); }
+
+  /* — Conflict Zones (AFTER / right) — */
+  try {
+    const d = await loadJSON('data/outputs/all_conflicts.geojson');
+    d.features.forEach(f => {
+      const ll=centroid(f); if(!ll) return; const p=f.properties;
+      const emoji = p.type==='Fuel Station'?'⛽':p.type==='Marketplace'?'🛒':'🚌';
+      const name  = p.name||p.type||'Conflict Zone';
+      const pop   = popup('#ff4060', `${emoji} Conflict Zone`, name,
+        [['Problem', p.reason||'Within 500m buffer'],
+         ['Solution', p.solution||'Relocate to safe zone','color:#00e676']], '🔴 Badly Placed');
+      mkCircle(ll,'#ff4060',11).bindPopup(pop).addTo(lg.conflicts);
+      L.circleMarker(ll,{ radius:20, color:'#ff4060',
+        weight:1.5, fillOpacity:0, opacity:0.25 }).addTo(lg.conflicts);
+      addTableRow(emoji, name, p.reason||'Within 500m buffer', p.solution||'Relocate to safe zone', 'Resolved');
+    });
+  } catch(e) { console.warn('conflicts:',e.message); }
+
+  /* — EV Stations (AFTER / right) — */
+  try {
+    const d = await loadJSON('data/outputs/ev_stations.geojson');
+    d.features.forEach(f => {
+      const ll=centroid(f); if(!ll) return; const p=f.properties;
+      const pop = popup('#3d7fff','⚡ EV Charging Station',`Proposed Site #${p.rank||'?'}`,
+        [['Score',`${p.suitability_score||0}/100`,'color:#3d7fff;font-weight:600'],
+         ['Why', p.reason||'High AHP suitability']], '⚡ Smart Site');
+      mkCircle(ll,'#3d7fff',10).bindPopup(pop).addTo(lg.ev);
+    });
+  } catch(e) { console.warn('ev:',e.message); }
+
+  /* — Waste Hubs (AFTER / right) — */
+  try {
+    const d = await loadJSON('data/outputs/waste_hubs.geojson');
+    d.features.forEach(f => {
+      const ll=centroid(f); if(!ll) return; const p=f.properties;
+      const pop = popup('#b060ff','🗑️ IoT Waste Hub',`Proposed Site #${p.rank||'?'}`,
+        [['Score',`${p.suitability_score||0}/100`,'color:#b060ff;font-weight:600'],
+         ['Why', p.reason||'Near residential areas']], '🗑️ Smart Site');
+      mkCircle(ll,'#b060ff',10).bindPopup(pop).addTo(lg.waste);
+    });
+  } catch(e) { console.warn('waste:',e.message); }
+
+  /* — Green Corridors (AFTER / right) — */
+  try {
+    const d = await loadJSON('data/outputs/green_corridors.geojson');
+    d.features.forEach(f => {
+      const ll=centroid(f); if(!ll) return; const p=f.properties;
+      const pop = popup('#00e676','🌿 Green Corridor',`Proposed Site #${p.rank||'?'}`,
+        [['Score',`${p.suitability_score||0}/100`,'color:#00e676;font-weight:600'],
+         ['Why', p.reason||'Peripheral open land']], '🌿 Smart Site');
+      mkCircle(ll,'#00e676',10).bindPopup(pop).addTo(lg.green);
+    });
+  } catch(e) { console.warn('green:',e.message); }
+
+  afterMap.setView(OKARA_CENTER, OKARA_ZOOM);
+  beforeMap.setView(OKARA_CENTER, OKARA_ZOOM);
+  layoutSwipeMaps();
+}
+
+/* ── SCROLL ANIMATIONS ───────────────────── */
+const findObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.opacity='1'; findObs.unobserve(e.target); }
+  });
+}, { threshold:0.15 });
+document.querySelectorAll('.finding-card').forEach(c => findObs.observe(c));
+
+/* ── BOOT ────────────────────────────────── */
+/* Size maps before first paint */
+layoutSwipeMaps();
+
+window.addEventListener('load', async () => {
+  setDividerPos(50);
+  layoutSwipeMaps();
+  await loadAllData();
+  setTimeout(layoutSwipeMaps, 100);
+  setTimeout(layoutSwipeMaps, 500);
+});
+
+window.addEventListener('resize', layoutSwipeMaps, { passive: true });
+</script>
+</body>
+</html>

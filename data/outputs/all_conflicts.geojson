@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "all_conflicts",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "status": "BADLY PLACED", "type": "Fuel Station", "reason": "Fuel station within 500m of school or hospital — fire hazard and pollution risk", "solution": "Relocate fuel station minimum 1km away from schools and hospitals", "name": "admore CNG and petrol station" }, "geometry": { "type": "Point", "coordinates": [ 73.46005, 30.805836 ] } },
+{ "type": "Feature", "properties": { "status": "BADLY PLACED", "type": "Fuel Station", "reason": "Fuel station within 500m of school or hospital — fire hazard and pollution risk", "solution": "Relocate fuel station minimum 1km away from schools and hospitals", "name": null }, "geometry": { "type": "Point", "coordinates": [ 73.563923427274574, 30.8630554451181 ] } },
+{ "type": "Feature", "properties": { "status": "BADLY PLACED", "type": "Fuel Station", "reason": "Fuel station within 500m of school or hospital — fire hazard and pollution risk", "solution": "Relocate fuel station minimum 1km away from schools and hospitals", "name": null }, "geometry": { "type": "Point", "coordinates": [ 73.450920340921428, 30.818976250691659 ] } },
+{ "type": "Feature", "properties": { "status": "BADLY PLACED", "type": "Marketplace", "reason": "Marketplace within 500m of school or hospital — traffic congestion and noise", "solution": "Relocate market to designated commercial zone near main highway", "name": "Sabzi Mandi (Farmer's Market)" }, "geometry": { "type": "Point", "coordinates": [ 73.4389793, 30.8099227 ] } },
+{ "type": "Feature", "properties": { "status": "BADLY PLACED", "type": "Bus Station", "reason": "Bus station within 500m of school or hospital — heavy traffic and noise pollution", "solution": "Relocate bus terminal to city outskirts near highway interchange", "name": "Ishaq transport" }, "geometry": { "type": "Point", "coordinates": [ 73.4588328, 30.8101915 ] } }
+]
+}

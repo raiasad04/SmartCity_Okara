@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "conflict_fuel",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "status": "BADLY PLACED", "type": "Fuel Station", "reason": "Fuel station within 500m of school or hospital — fire hazard and pollution risk", "solution": "Relocate fuel station minimum 1km away from schools and hospitals", "name": "admore CNG and petrol station" }, "geometry": { "type": "Point", "coordinates": [ 73.46005, 30.805836 ] } },
+{ "type": "Feature", "properties": { "status": "BADLY PLACED", "type": "Fuel Station", "reason": "Fuel station within 500m of school or hospital — fire hazard and pollution risk", "solution": "Relocate fuel station minimum 1km away from schools and hospitals", "name": null }, "geometry": { "type": "Point", "coordinates": [ 73.563923427274574, 30.8630554451181 ] } },
+{ "type": "Feature", "properties": { "status": "BADLY PLACED", "type": "Fuel Station", "reason": "Fuel station within 500m of school or hospital — fire hazard and pollution risk", "solution": "Relocate fuel station minimum 1km away from schools and hospitals", "name": null }, "geometry": { "type": "Point", "coordinates": [ 73.450920340921428, 30.818976250691659 ] } }
+]
+}

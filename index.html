@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<!-- SEO Meta -->
+<title>Smart City Okara — Spatial Suitability Analysis | Asad Bashir</title>
+<meta name="description" content="A GIS-based Smart City Suitability Analysis for Okara City, Punjab, Pakistan. Identifying conflict zones, proposing EV stations, IoT waste hubs, and green corridors using AHP-MCDA methodology."/>
+<meta name="keywords" content="Smart City Okara, GIS, Remote Sensing, Suitability Analysis, AHP, MCDA, Asad Bashir, University of Okara, Pakistan"/>
+<meta name="author" content="Asad Bashir"/>
+<meta name="robots" content="index, follow"/>
+
+<!-- Open Graph -->
+<meta property="og:title" content="Smart City Okara — Spatial Suitability Analysis"/>
+<meta property="og:description" content="GIS-based Smart City planning for Okara City using AHP-MCDA methodology."/>
+<meta property="og:type" content="website"/>
+<meta property="og:locale" content="en_PK"/>
+
+<!-- Canonical -->
+<link rel="canonical" href="./index.html"/>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<!-- Master stylesheet -->
+<link rel="stylesheet" href="style.css"/>
+
+<style>
+/* ═══════════════════════════════════════
+   PAGE-SPECIFIC: LANDING / HERO
+═══════════════════════════════════════ */
+
+/* Full-screen hero with map */
+.hero {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Map fills entire viewport */
+#hero-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Dark gradient vignette over map */
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom,
+      rgba(6,9,18,0.72) 0%,
+      rgba(6,9,18,0.10) 30%,
+      rgba(6,9,18,0.08) 60%,
+      rgba(6,9,18,0.80) 100%),
+    linear-gradient(to right,
+      rgba(6,9,18,0.60) 0%,
+      transparent 45%,
+      transparent 55%,
+      rgba(6,9,18,0.30) 100%);
+}
+
+/* Scanline texture */
+.hero-scanline {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0,0,0,0.015) 3px,
+    rgba(0,0,0,0.015) 4px
+  );
+}
+
+/* Hero content layer */
+.hero-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 5vh;
+  padding-top: var(--nav-height);
+}
+
+.hero-inner {
+  padding-inline: clamp(1.5rem, 5vw, 5rem);
+  max-width: 860px;
+}
+
+/* Overline label */
+.hero-overline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1.25rem;
+  opacity: 0;
+  animation: fadeUp 0.7s var(--ease-out) 0.3s both;
+}
+
+.hero-overline::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--cyan);
+  flex-shrink: 0;
+}
+
+/* Main heading */
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6vw, 5.2rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--text-bright);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s var(--ease-out) 0.45s both;
+  letter-spacing: -0.02em;
+}
+
+.hero-title .accent {
+  background: linear-gradient(135deg, var(--cyan) 0%, #60c8ff 50%, var(--blue) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+}
+
+/* Subtitle */
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 300;
+  color: rgba(200,220,245,0.75);
+  line-height: 1.65;
+  max-width: 560px;
+  margin-bottom: 2.2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s var(--ease-out) 0.6s both;
+}
+
+/* CTA row */
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.8s var(--ease-out) 0.75s both;
+}
+
+/* Stats row */
+.hero-stats {
+  display: flex;
+  gap: 0;
+  margin-top: 3rem;
+  opacity: 0;
+  animation: fadeUp 0.8s var(--ease-out) 0.9s both;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(6,9,18,0.55);
+  width: fit-content;
+}
+
+.hero-stat {
+  padding: 1rem 1.6rem;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  min-width: 110px;
+}
+
+.hero-stat:last-child { border-right: none; }
+
+.hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.hero-stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(200,220,245,0.5);
+}
+
+/* ── TOP-RIGHT MAP BADGES ── */
+.map-badge-group {
+  position: absolute;
+  top: calc(var(--nav-height) + 16px);
+  right: 20px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  animation: slideLeft 0.7s var(--ease-out) 1.1s both;
+}
+
+.map-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  background: rgba(6,9,18,0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(200,220,245,0.7);
+  white-space: nowrap;
+}
+
+/* ── LAYER TOGGLE PANEL ── */
+.layer-panel {
+  position: absolute;
+  bottom: calc(5vh + 10px);
+  right: 20px;
+  z-index: 25;
+  pointer-events: auto;
+  background: rgba(6,9,18,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r-lg);
+  padding: 1rem;
+  min-width: 200px;
+  opacity: 0;
+  animation: slideLeft 0.7s var(--ease-out) 1.2s both;
+}
+
+.layer-panel-title {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(200,220,245,0.4);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.layer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease);
+  user-select: none;
+  margin-bottom: 2px;
+}
+
+.layer-toggle:hover { background: rgba(255,255,255,0.05); }
+
+.layer-toggle.off { opacity: 0.35; }
+
+.layer-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.layer-toggle-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(200,220,245,0.8);
+  flex: 1;
+}
+
+.layer-count {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: rgba(200,220,245,0.35);
+  background: rgba(255,255,255,0.05);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ── SCROLL INDICATOR ── */
+.scroll-cue {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeIn 1s var(--ease-out) 1.5s both;
+  pointer-events: none;
+}
+
+.scroll-cue span {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(200,220,245,0.35);
+}
+
+.scroll-cue-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(0,212,255,0.5), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50%       { opacity: 0.4; transform: scaleY(0.6); }
+}
+
+/* ── POPUP STYLES ── */
+.lp-body { padding: 14px 16px; }
+
+.lp-type {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lp-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.25;
+}
+
+.lp-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 5px;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: rgba(200,220,245,0.7);
+}
+
+.lp-key {
+  flex-shrink: 0;
+  width: 58px;
+  color: rgba(200,220,245,0.4);
+}
+
+.lp-val { color: rgba(200,220,245,0.85); }
+
+.lp-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin: 8px 0;
+}
+
+.lp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── BELOW-FOLD STATS SECTION ── */
+.stats-section {
+  padding: var(--sp-20) 0;
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.4), transparent);
+}
+
+.stats-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.stats-cell {
+  background: var(--ink);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: background var(--dur-base) var(--ease);
+}
+
+.stats-cell:hover { background: rgba(20,27,45,0.8); }
+
+.stats-cell::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.stats-cell.c-cyan::before   { background: var(--cyan); box-shadow: 0 0 16px rgba(0,212,255,0.5); }
+.stats-cell.c-red::before    { background: var(--red);  box-shadow: 0 0 16px rgba(255,64,96,0.5); }
+.stats-cell.c-green::before  { background: var(--green);box-shadow: 0 0 16px rgba(0,230,118,0.5); }
+.stats-cell.c-amber::before  { background: var(--amber);box-shadow: 0 0 16px rgba(255,179,0,0.5); }
+
+.stats-cell-icon {
+  font-size: 1.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.stats-cell-num {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stats-cell.c-cyan  .stats-cell-num { color: var(--cyan); }
+.stats-cell.c-red   .stats-cell-num { color: var(--red); }
+.stats-cell.c-green .stats-cell-num { color: var(--green); }
+.stats-cell.c-amber .stats-cell-num { color: var(--amber); }
+
+.stats-cell-label {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.stats-cell-sub {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ── INTRO TEXT SECTION ── */
+.intro-section {
+  padding: var(--sp-20) 0;
+  background: var(--ink-deep);
+}
+
+.intro-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.intro-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.intro-label::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--cyan);
+}
+
+.intro-grid h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  margin-bottom: 1.5rem;
+  line-height: 1.15;
+}
+
+.intro-grid p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+}
+
+.pillars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pillar-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  transition: border-color var(--dur-base) var(--ease),
+              transform var(--dur-base) var(--ease-spring);
+}
+
+.pillar-item:hover {
+  border-color: rgba(0,212,255,0.25);
+  transform: translateX(4px);
+}
+
+.pillar-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.pillar-title {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 0.3rem;
+}
+
+.pillar-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* mini map card */
+.mini-map-card {
+  position: relative;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  aspect-ratio: 4/3;
+}
+
+#mini-map {
+  width: 100%;
+  height: 100%;
+}
+
+.mini-map-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 1rem 1.2rem;
+  background: linear-gradient(to top, rgba(6,9,18,0.9) 0%, transparent 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.mini-map-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(200,220,245,0.5);
+}
+
+/* ── TOOLS / METHODOLOGY SECTION ── */
+.method-section {
+  padding: var(--sp-20) 0;
+  background: var(--ink);
+  position: relative;
+}
+
+.method-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+}
+
+.method-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.method-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--dur-base) var(--ease);
+}
+
+.method-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease);
+  background: radial-gradient(circle at top left, rgba(0,212,255,0.06), transparent 70%);
+}
+
+.method-card:hover { border-color: rgba(0,212,255,0.2); transform: translateY(-4px); }
+.method-card:hover::after { opacity: 1; }
+
+.method-card-num {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.method-card-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.method-card-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 0.5rem;
+}
+
+.method-card-tech {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+
+.method-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ── PAGE-NAV QUICK LINKS ── */
+.page-nav-section {
+  padding: var(--sp-16) 0;
+  background: var(--ink-deep);
+}
+
+.page-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.page-nav-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  transition: all var(--dur-base) var(--ease-spring);
+  text-decoration: none;
+}
+
+.page-nav-card:hover {
+  background: var(--surface-2);
+  border-color: rgba(0,212,255,0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.page-nav-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.page-nav-text {}
+
+.page-nav-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.page-nav-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 0.2rem;
+}
+
+.page-nav-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.page-nav-arrow {
+  margin-left: auto;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+
+.page-nav-card:hover .page-nav-arrow {
+  transform: translateX(4px);
+  color: var(--cyan);
+}
+
+/* ══════════════
+   FOOTER
+══════════════ */
+.site-footer {
+  background: var(--ink);
+  border-top: 1px solid var(--border);
+  padding: 3rem 0 2rem;
+}
+
+.footer-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 3rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.footer-brand {}
+
+.footer-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  margin-bottom: 0.4rem;
+}
+
+.footer-brand-sub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.footer-brand-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 280px;
+}
+
+.footer-links-group {
+  display: flex;
+  gap: 4rem;
+}
+
+.footer-links-col h4 {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.footer-links-col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.footer-links-col ul li a {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.footer-links-col ul li a:hover { color: var(--cyan); }
+
+.footer-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+
+.footer-tech-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tech-badge {
+  padding: 3px 9px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ═══════════
+   RESPONSIVE
+═══════════ */
+@media (max-width: 1024px) {
+  .stats-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .page-nav-grid { grid-template-columns: 1fr; }
+  .intro-grid { grid-template-columns: 1fr; gap: 3rem; }
+}
+
+@media (max-width: 768px) {
+  .hero-title { font-size: 2.4rem; }
+  .hero-stats { flex-wrap: wrap; }
+  .hero-stat { min-width: 120px; }
+  .layer-panel { display: none; }
+  .map-badge-group { top: calc(var(--nav-height) + 10px); right: 10px; }
+  .stats-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .method-cards { grid-template-columns: 1fr; }
+  .footer-top { flex-direction: column; gap: 2rem; }
+  .footer-links-group { flex-wrap: wrap; gap: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid-4 { grid-template-columns: 1fr; }
+  .hero-cta-row { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOADING SCREEN
+══════════════════════════════════════ -->
+<div class="loading-screen" id="loading-screen" aria-hidden="true">
+  <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+    <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#00d4ff,#3d7fff);display:flex;align-items:center;justify-content:center;font-size:16px">🏙️</div>
+    <div class="loading-title">Smart City Okara</div>
+  </div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.5rem">
+    Spatial Suitability Analysis System
+  </div>
+  <div class="loading-bar-track">
+    <div class="loading-bar-fill" id="loading-bar"></div>
+  </div>
+  <div class="loading-status" id="loading-status">Initialising spatial data…</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════ -->
+<nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+  <a class="nav-logo" href="index.html" aria-label="Smart City Okara — Home">
+    <div class="nav-logo-icon" aria-hidden="true">🏙️</div>
+    <div class="nav-logo-text">
+      <div class="nav-logo-title">Smart City Okara</div>
+      <div class="nav-logo-sub">BS RS&amp;GIS · Asad Bashir</div>
+    </div>
+  </a>
+
+  <div class="nav-links" role="list">
+    <a class="nav-link active" href="index.html" role="listitem">Map</a>
+    <a class="nav-link" href="features.html" role="listitem">Features</a>
+    <a class="nav-link" href="compare.html" role="listitem">Before / After</a>
+    <a class="nav-link" href="about.html" role="listitem">About</a>
+  </div>
+
+  <a class="nav-cta" href="features.html" aria-label="Explore Smart City features">
+    Explore Features
+    <span aria-hidden="true">→</span>
+  </a>
+
+  <!-- Mobile hamburger -->
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="nav-mobile">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<nav class="nav-mobile" id="nav-mobile" aria-label="Mobile navigation">
+  <a class="nav-link active" href="index.html">Map</a>
+  <a class="nav-link" href="features.html">Features</a>
+  <a class="nav-link" href="compare.html">Before / After</a>
+  <a class="nav-link" href="about.html">About</a>
+  <a class="btn btn-primary btn-sm" href="features.html" style="margin-top:0.5rem;width:fit-content">Explore Features →</a>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO — FULL SCREEN MAP
+══════════════════════════════════════ -->
+<main>
+<section class="hero" aria-label="Interactive map of Okara City smart city analysis">
+
+  <!-- Leaflet map -->
+  <div id="hero-map"></div>
+
+  <!-- Visual overlays -->
+  <div class="hero-vignette" aria-hidden="true"></div>
+  <div class="hero-scanline" aria-hidden="true"></div>
+
+  <!-- Top-right badges -->
+  <div class="map-badge-group" aria-label="Map information">
+    <div class="map-badge">
+      <span style="width:7px;height:7px;border-radius:50%;background:#00e676;display:inline-block;animation:pulse-green 2s infinite" aria-hidden="true"></span>
+      Live OSM Data · Okara, Punjab
+    </div>
+    <div class="map-badge">
+      📡 CRS: EPSG:32642 · UTM Zone 42N
+    </div>
+  </div>
+
+  <!-- Layer toggles -->
+  <div class="layer-panel" id="layer-panel" role="group" aria-label="Map layer controls">
+    <div class="layer-panel-title">Map Layers</div>
+
+    <div class="layer-toggle" id="lt-sensitive" onclick="toggleHeroLayer('sensitive')" role="checkbox" aria-checked="true" tabindex="0">
+      <div class="layer-dot" style="background:#ffd600"></div>
+      <span class="layer-toggle-label">Sensitive Sites</span>
+      <span class="layer-count">31</span>
+    </div>
+
+    <div class="layer-toggle" id="lt-buffers" onclick="toggleHeroLayer('buffers')" role="checkbox" aria-checked="true" tabindex="0">
+      <div class="layer-dot" style="background:#ff4060;opacity:0.6"></div>
+      <span class="layer-toggle-label">500m Buffers</span>
+      <span class="layer-count">31</span>
+    </div>
+
+    <div class="layer-toggle" id="lt-conflicts" onclick="toggleHeroLayer('conflicts')" role="checkbox" aria-checked="true" tabindex="0">
+      <div class="layer-dot" style="background:#ff4060"></div>
+      <span class="layer-toggle-label">Conflict Zones</span>
+      <span class="layer-count">5</span>
+    </div>
+
+    <div class="layer-toggle" id="lt-ev" onclick="toggleHeroLayer('ev')" role="checkbox" aria-checked="true" tabindex="0">
+      <div class="layer-dot" style="background:#3d7fff"></div>
+      <span class="layer-toggle-label">EV Stations</span>
+      <span class="layer-count">5</span>
+    </div>
+
+    <div class="layer-toggle" id="lt-waste" onclick="toggleHeroLayer('waste')" role="checkbox" aria-checked="true" tabindex="0">
+      <div class="layer-dot" style="background:#b060ff"></div>
+      <span class="layer-toggle-label">IoT Waste Hubs</span>
+      <span class="layer-count">5</span>
+    </div>
+
+    <div class="layer-toggle" id="lt-green" onclick="toggleHeroLayer('green')" role="checkbox" aria-checked="true" tabindex="0">
+      <div class="layer-dot" style="background:#00e676"></div>
+      <span class="layer-toggle-label">Green Corridors</span>
+      <span class="layer-count">5</span>
+    </div>
+  </div>
+
+  <!-- Hero text content -->
+  <div class="hero-content">
+    <div class="hero-inner">
+
+      <div class="hero-overline">
+        <span class="pulse-dot pulse-dot-cyan" aria-hidden="true"></span>
+        GIS Suitability Analysis · Okara City, Punjab, Pakistan
+      </div>
+
+      <h1 class="hero-title">
+        Reimagining
+        <span class="accent">Okara's Urban Future</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        A GIS-based Multi-Criteria Decision Analysis (MCDA) study identifying
+        conflict zones and optimal sites for Smart City infrastructure
+        EV stations, IoT waste hubs, and green corridors.
+      </p>
+
+      <div class="hero-cta-row">
+        <a class="btn btn-primary btn-lg" href="features.html">
+          Explore Smart Features →
+        </a>
+        <a class="btn btn-secondary btn-lg" href="compare.html">
+          Before / After View
+        </a>
+      </div>
+
+      <div class="hero-stats" role="region" aria-label="Analysis summary statistics">
+        <div class="hero-stat">
+          <div class="hero-stat-num" style="color:var(--cyan)">31</div>
+          <div class="hero-stat-lbl">Protected<br>Sites</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" style="color:var(--red)">5</div>
+          <div class="hero-stat-lbl">Conflict<br>Zones</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" style="color:var(--green)">155</div>
+          <div class="hero-stat-lbl">Safe<br>Zones</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" style="color:var(--amber)">15</div>
+          <div class="hero-stat-lbl">Smart<br>Sites</div>
+        </div>
+      </div>
+
+    </div><!-- /hero-inner -->
+  </div><!-- /hero-content -->
+
+  <!-- Scroll cue -->
+  <div class="scroll-cue" aria-hidden="true">
+    <span>Scroll to explore</span>
+    <div class="scroll-cue-line"></div>
+  </div>
+
+</section><!-- /hero -->
+
+<!-- ══════════════════════════════════════
+     STATS SECTION
+══════════════════════════════════════ -->
+<section class="stats-section" aria-labelledby="stats-heading">
+  <div class="container">
+
+    <div class="section-header" style="text-align:center;margin-bottom:3rem">
+      <div class="overline" style="justify-content:center">
+        <span aria-hidden="true">——</span>
+        Analysis Results at a Glance
+      </div>
+      <h2 id="stats-heading">What We Found in Okara City</h2>
+      <p style="margin-inline:auto;text-align:center">
+        Spatial analysis of OpenStreetMap data using Python GeoPandas, buffer analysis,
+        and AHP-MCDA weighting reveals critical urban planning issues and optimal Smart City sites.
+      </p>
+    </div>
+
+    <div class="stats-grid-4" role="list">
+      <div class="stats-cell c-cyan" role="listitem">
+        <div class="stats-cell-icon" aria-hidden="true">🏫</div>
+        <div class="stats-cell-num">31</div>
+        <div class="stats-cell-label">Sensitive Locations</div>
+        <div class="stats-cell-sub">Schools · Hospitals · Colleges</div>
+      </div>
+      <div class="stats-cell c-red" role="listitem">
+        <div class="stats-cell-icon" aria-hidden="true">⚠️</div>
+        <div class="stats-cell-num">5</div>
+        <div class="stats-cell-label">Conflict Zones Found</div>
+        <div class="stats-cell-sub">Within 500m safety buffer</div>
+      </div>
+      <div class="stats-cell c-green" role="listitem">
+        <div class="stats-cell-icon" aria-hidden="true">✅</div>
+        <div class="stats-cell-num">155</div>
+        <div class="stats-cell-label">Safe Relocation Zones</div>
+        <div class="stats-cell-sub">Conflict-free residential areas</div>
+      </div>
+      <div class="stats-cell c-amber" role="listitem">
+        <div class="stats-cell-icon" aria-hidden="true">🏗️</div>
+        <div class="stats-cell-num">15</div>
+        <div class="stats-cell-label">Smart Sites Proposed</div>
+        <div class="stats-cell-sub">EV · Waste · Green Corridors</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     INTRO / ABOUT PROJECT SECTION
+══════════════════════════════════════ -->
+<section class="intro-section" aria-labelledby="intro-heading">
+  <div class="container">
+    <div class="intro-grid">
+
+      <!-- Text -->
+      <div>
+        <div class="intro-label">About This Project</div>
+        <h2 id="intro-heading">
+          Transforming Okara into a
+          <span style="background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Smart City</span>
+        </h2>
+        <p>
+          This final-year GIS project performs a comprehensive Spatial Suitability Analysis
+          for Okara City, Punjab, Pakistan. Using OpenStreetMap data, Python GeoPandas,
+          and the Analytic Hierarchy Process (AHP), the study identifies badly-placed
+          urban infrastructure and proposes scientifically-optimal locations for
+          modern smart city facilities.
+        </p>
+        <p>
+          The research is built on two core pillars — Urban Conflict Resolution and
+          Smart Infrastructure Site Selection — validated by mathematical MCDA weighting
+          with AHP Consistency Ratios below 0.10.
+        </p>
+
+        <div class="pillars-list">
+          <div class="pillar-item">
+            <div class="pillar-icon" aria-hidden="true">🔴</div>
+            <div>
+              <div class="pillar-title">Urban Conflict Resolution</div>
+              <div class="pillar-desc">Identifying fuel stations, bus stands and markets that violate 500m safety buffers around schools and hospitals — with relocation solutions.</div>
+            </div>
+          </div>
+          <div class="pillar-item">
+            <div class="pillar-icon" aria-hidden="true">✦</div>
+            <div>
+              <div class="pillar-title">Smart Infrastructure Siting</div>
+              <div class="pillar-desc">AHP-MCDA multi-criteria scoring to find the top 5 locations each for EV charging stations, IoT waste hubs, and green corridor development.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini map -->
+      <div>
+        <div class="mini-map-card" style="height:420px">
+          <div id="mini-map"></div>
+          <div class="mini-map-overlay">
+            <span class="mini-map-label">Okara City · Punjab, Pakistan</span>
+            <span class="mini-map-label">30.81°N 73.45°E</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     METHODOLOGY SECTION
+══════════════════════════════════════ -->
+<section class="method-section" aria-labelledby="method-heading">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="overline">Technical Methodology</div>
+      <h2 id="method-heading">How the Analysis Works</h2>
+      <p>A four-phase pipeline from raw OSM data to an interactive Smart City dashboard.</p>
+    </div>
+
+    <div class="method-cards" role="list">
+
+      <div class="method-card" role="listitem">
+        <div class="method-card-num">Phase 01</div>
+        <div class="method-card-icon" aria-hidden="true">📡</div>
+        <div class="method-card-title">Data Acquisition</div>
+        <div class="method-card-tech">OSMnx · GeoPandas · EPSG:32642</div>
+        <div class="method-card-desc">Downloading building footprints, road networks, amenities, and land-use polygons for Okara City using Python and OpenStreetMap APIs.</div>
+      </div>
+
+      <div class="method-card" role="listitem">
+        <div class="method-card-num">Phase 02</div>
+        <div class="method-card-icon" aria-hidden="true">🔍</div>
+        <div class="method-card-title">Conflict Detection</div>
+        <div class="method-card-tech">Buffer Analysis · Spatial SQL · PostGIS</div>
+        <div class="method-card-desc">Creating 500m safety buffers around schools and hospitals, then using spatial intersection to flag any fuel stations, markets, or bus stands within those zones.</div>
+      </div>
+
+      <div class="method-card" role="listitem">
+        <div class="method-card-num">Phase 03</div>
+        <div class="method-card-icon" aria-hidden="true">📊</div>
+        <div class="method-card-title">AHP-MCDA Scoring</div>
+        <div class="method-card-tech">Analytic Hierarchy Process · NumPy · Pandas</div>
+        <div class="method-card-desc">Assigning mathematical weights to decision criteria — road proximity, residential density, safety distance — to score every candidate zone 0–100.</div>
+      </div>
+
+      <div class="method-card" role="listitem">
+        <div class="method-card-num">Phase 04</div>
+        <div class="method-card-icon" aria-hidden="true">🌐</div>
+        <div class="method-card-title">Web Dashboard</div>
+        <div class="method-card-tech">Leaflet.js · GeoJSON · GitHub Pages</div>
+        <div class="method-card-desc">Exporting all analysis outputs as GeoJSON and building this interactive Before/After web dashboard with layer controls and popup detail panels.</div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PAGE NAVIGATION QUICK LINKS
+══════════════════════════════════════ -->
+<section class="page-nav-section" aria-label="Navigate to other sections">
+  <div class="container">
+
+    <div class="section-header" style="margin-bottom:2rem">
+      <div class="overline">Explore the Project</div>
+      <h2>What Would You Like to See?</h2>
+    </div>
+
+    <div class="page-nav-grid">
+
+      <a class="page-nav-card" href="features.html">
+        <div class="page-nav-icon" aria-hidden="true">🏗️</div>
+        <div class="page-nav-text">
+          <div class="page-nav-label">Section 02</div>
+          <div class="page-nav-title">Smart City Features</div>
+          <div class="page-nav-sub">EV Stations · Waste Hubs · Green Corridors · Conflict Zones</div>
+        </div>
+        <div class="page-nav-arrow" aria-hidden="true">→</div>
+      </a>
+
+      <a class="page-nav-card" href="compare.html">
+        <div class="page-nav-icon" aria-hidden="true">🔄</div>
+        <div class="page-nav-text">
+          <div class="page-nav-label">Section 03</div>
+          <div class="page-nav-title">Before &amp; After</div>
+          <div class="page-nav-sub">Satellite view · Swipe comparison · Current vs Smart City</div>
+        </div>
+        <div class="page-nav-arrow" aria-hidden="true">→</div>
+      </a>
+
+      <a class="page-nav-card" href="about.html">
+        <div class="page-nav-icon" aria-hidden="true">👨‍🎓</div>
+        <div class="page-nav-text">
+          <div class="page-nav-label">Section 04</div>
+          <div class="page-nav-title">Team &amp; Project</div>
+          <div class="page-nav-sub">Asad Bashir · Syed Ahtesham · Dr. Inam-ul-Haq</div>
+        </div>
+        <div class="page-nav-arrow" aria-hidden="true">→</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem">
+          <div style="width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,#00d4ff,#3d7fff);display:flex;align-items:center;justify-content:center;font-size:15px" aria-hidden="true">🏙️</div>
+          <div class="footer-brand-name">Smart City Okara</div>
+        </div>
+        <div class="footer-brand-sub">BS Remote Sensing &amp; GIS · University of Okara</div>
+        <div class="footer-brand-desc">
+          A final-year academic project conducting GIS-based spatial suitability
+          analysis to plan smart infrastructure for Okara City, Punjab, Pakistan.
+        </div>
+      </div>
+
+      <div class="footer-links-group">
+        <div class="footer-links-col">
+          <h4>Pages</h4>
+          <ul>
+            <li><a href="index.html">Map Dashboard</a></li>
+            <li><a href="features.html">Smart Features</a></li>
+            <li><a href="compare.html">Before / After</a></li>
+            <li><a href="about.html">About &amp; Team</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-col">
+          <h4>Project</h4>
+          <ul>
+            <li><a href="#">Technical Thesis</a></li>
+            <li><a href="#">GitHub Repository</a></li>
+            <li><a href="#">GeoJSON Data</a></li>
+            <li><a href="#">PDF Maps</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom-bar">
+      <div class="footer-copy">
+        © 2025 Asad Bashir · BS Remote Sensing &amp; GIS · University of Okara, Pakistan
+      </div>
+      <div class="footer-tech-badges" aria-label="Technologies used">
+        <span class="tech-badge">Python</span>
+        <span class="tech-badge">GeoPandas</span>
+        <span class="tech-badge">Leaflet.js</span>
+        <span class="tech-badge">QGIS</span>
+        <span class="tech-badge">OSM</span>
+        <span class="tech-badge">AHP-MCDA</span>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+'use strict';
+
+/* ──────────────────────────────────────
+   LOADING SCREEN
+────────────────────────────────────── */
+const loadingMessages = [
+  'Initialising spatial data…',
+  'Loading Okara City geometry…',
+  'Applying coordinate system EPSG:32642…',
+  'Rendering map layers…',
+  'Ready.'
+];
+
+let msgIdx = 0;
+const statusEl = document.getElementById('loading-status');
+const msgInterval = setInterval(() => {
+  msgIdx = Math.min(msgIdx + 1, loadingMessages.length - 1);
+  if (statusEl) statusEl.textContent = loadingMessages[msgIdx];
+  if (msgIdx === loadingMessages.length - 1) clearInterval(msgInterval);
+}, 480);
+
+function hideLoading() {
+  const ls = document.getElementById('loading-screen');
+  if (!ls) return;
+  ls.style.opacity = '0';
+  ls.style.transition = 'opacity 0.6s ease';
+  setTimeout(() => { ls.style.display = 'none'; }, 650);
+}
+
+/* ──────────────────────────────────────
+   NAV — SCROLL BEHAVIOUR + HAMBURGER
+────────────────────────────────────── */
+const mainNav = document.getElementById('main-nav');
+const hamburger = document.getElementById('nav-hamburger');
+const mobileMenu = document.getElementById('nav-mobile');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 30) {
+    mainNav.classList.add('scrolled');
+  } else {
+    mainNav.classList.remove('scrolled');
+  }
+}, { passive: true });
+
+hamburger.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open', isOpen);
+  hamburger.setAttribute('aria-expanded', String(isOpen));
+});
+
+/* Close mobile menu on link click */
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+  });
+});
+
+/* ──────────────────────────────────────
+   HERO MAP — LEAFLET INIT
+────────────────────────────────────── */
+const OKARA = [30.810, 73.450];
+const ZOOM  = 13;
+/* Keep map focused on Okara City — not worldwide */
+const OKARA_BOUNDS = L.latLngBounds([30.72, 73.32], [30.92, 73.75]);
+
+const heroMap = L.map('hero-map', {
+  zoomControl: false,
+  attributionControl: false,
+  scrollWheelZoom: true,
+  dragging: true,
+}).setView(OKARA, ZOOM);
+
+heroMap.setMaxBounds(OKARA_BOUNDS);
+heroMap.setMinZoom(12);
+
+L.control.zoom({ position: 'bottomright' }).addTo(heroMap);
+L.control.attribution({ position: 'bottomright', prefix: false })
+  .addAttribution('© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors')
+  .addTo(heroMap);
+
+/* Dark base tile */
+const darkTile = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  maxZoom: 19,
+  subdomains: 'abcd'
+}).addTo(heroMap);
+
+/* ──────────────────────────────────────
+   LAYER GROUPS
+────────────────────────────────────── */
+const heroLayers = {
+  sensitive: L.layerGroup().addTo(heroMap),
+  buffers:   L.layerGroup().addTo(heroMap),
+  conflicts: L.layerGroup().addTo(heroMap),
+  ev:        L.layerGroup().addTo(heroMap),
+  waste:     L.layerGroup().addTo(heroMap),
+  green:     L.layerGroup().addTo(heroMap),
+};
+
+const heroLayerVisible = {
+  sensitive: true,
+  buffers:   true,
+  conflicts: true,
+  ev:        true,
+  waste:     true,
+  green:     true,
+};
+
+function toggleHeroLayer(name) {
+  if (heroLayerVisible[name]) {
+    heroMap.removeLayer(heroLayers[name]);
+    document.getElementById('lt-' + name).classList.add('off');
+    document.getElementById('lt-' + name).setAttribute('aria-checked', 'false');
+  } else {
+    heroMap.addLayer(heroLayers[name]);
+    document.getElementById('lt-' + name).classList.remove('off');
+    document.getElementById('lt-' + name).setAttribute('aria-checked', 'true');
+  }
+  heroLayerVisible[name] = !heroLayerVisible[name];
+}
+
+/* Keyboard support for layer toggles */
+document.querySelectorAll('.layer-toggle').forEach(el => {
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      el.click();
+    }
+  });
+});
+
+/* ──────────────────────────────────────
+   HELPER: get centroid from any geometry
+────────────────────────────────────── */
+function getCentroid(feature) {
+  const g = feature.geometry;
+  const c = g.coordinates;
+  if (g.type === 'Point') return [c[1], c[0]];
+  if (g.type === 'Polygon') {
+    let la = 0, lo = 0, n = c[0].length;
+    c[0].forEach(p => { lo += p[0]; la += p[1]; });
+    return [la / n, lo / n];
+  }
+  if (g.type === 'MultiPolygon') {
+    const f = c[0][0]; let la = 0, lo = 0, n = f.length;
+    f.forEach(p => { lo += p[0]; la += p[1]; });
+    return [la / n, lo / n];
+  }
+  return null;
+}
+
+/* ──────────────────────────────────────
+   HELPER: circle marker
+────────────────────────────────────── */
+function makeCircle(ll, color, radius = 9) {
+  return L.circleMarker(ll, {
+    radius,
+    color: 'rgba(255,255,255,0.25)',
+    weight: 1.5,
+    fillColor: color,
+    fillOpacity: 0.92,
+  });
+}
+
+/* ──────────────────────────────────────
+   LOAD GEOJSON LAYERS
+────────────────────────────────────── */
+async function loadJSON(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`HTTP ${r.status}: ${url}`);
+  return r.json();
+}
+
+function updateLayerCounts(counts) {
+  const map = {
+    sensitive: counts.sensitive,
+    buffers: counts.buffers,
+    conflicts: counts.conflicts,
+    ev: counts.ev,
+    waste: counts.waste,
+    green: counts.green,
+  };
+  Object.entries(map).forEach(([key, n]) => {
+    const el = document.querySelector(`#lt-${key} .layer-count`);
+    if (el && n != null) el.textContent = n;
+  });
+}
+
+function sensitivePopup(p, name) {
+  return `<div class="lp-body">
+    <div class="lp-type" style="color:#ffd600">🏫 Sensitive Location</div>
+    <div class="lp-name">${name}</div>
+    <div class="lp-row"><span class="lp-key">Type</span><span class="lp-val">${p.amenity || 'N/A'}</span></div>
+    <div class="lp-row"><span class="lp-key">Buffer</span><span class="lp-val">500m safety zone active</span></div>
+    <div class="lp-divider"></div>
+    <span class="lp-tag" style="background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.2)">⚠ Protected</span>
+  </div>`;
+}
+
+async function initHeroLayers() {
+  const counts = { sensitive: 0, buffers: 0, conflicts: 0, ev: 0, waste: 0, green: 0 };
+
+  /* 1 — Safety buffers */
+  try {
+    const d = await loadJSON('data/outputs/safety_buffers.geojson');
+    counts.buffers = d.features.length;
+    L.geoJSON(d, {
+      style: {
+        color: '#ff4060', fillColor: '#ff4060',
+        fillOpacity: 0.07, weight: 1,
+        dashArray: '5 5'
+      }
+    }).addTo(heroLayers.buffers);
+  } catch (e) { console.warn('buffers layer:', e.message); }
+
+  /* 2 — Sensitive locations */
+  try {
+    const d = await loadJSON('data/outputs/sensitive_locations.geojson');
+    counts.sensitive = d.features.length;
+    d.features.forEach(f => {
+      const ll = getCentroid(f);
+      if (!ll) return;
+      const p = f.properties;
+      const name = p.name || p.amenity || 'Sensitive Site';
+      makeCircle(ll, '#ffd600', 7).bindPopup(sensitivePopup(p, name)).addTo(heroLayers.sensitive);
+    });
+  } catch (e) { console.warn('sensitive layer:', e.message); }
+
+  /* 3 — Conflict zones */
+  try {
+    const d = await loadJSON('data/outputs/all_conflicts.geojson');
+    counts.conflicts = d.features.length;
+    d.features.forEach(f => {
+      const ll = getCentroid(f);
+      if (!ll) return;
+      const p = f.properties;
+      const name = p.name || p.type || 'Conflict Zone';
+      const emoji = p.type === 'Fuel Station' ? '⛽'
+                  : p.type === 'Marketplace'  ? '🛒'
+                  : p.type === 'Bus Station'  ? '🚌' : '⚠️';
+
+      const m = makeCircle(ll, '#ff4060', 11).addTo(heroLayers.conflicts);
+      L.circleMarker(ll, {
+        radius: 20, color: '#ff4060', weight: 1.5,
+        fillOpacity: 0, opacity: 0.3
+      }).addTo(heroLayers.conflicts);
+
+      m.bindPopup(`
+        <div class="lp-body">
+          <div class="lp-type" style="color:#ff4060">${emoji} Conflict Detected</div>
+          <div class="lp-name">${name}</div>
+          <div class="lp-row"><span class="lp-key">Type</span><span class="lp-val">${p.type || 'N/A'}</span></div>
+          <div class="lp-row"><span class="lp-key">Problem</span><span class="lp-val">${p.reason || 'Within 500m of sensitive site'}</span></div>
+          <div class="lp-divider"></div>
+          <div class="lp-row"><span class="lp-key">Solution</span><span class="lp-val" style="color:#00e676">${p.solution || 'Relocate to safe zone'}</span></div>
+          <span class="lp-tag" style="background:rgba(255,64,96,0.1);color:#ff4060;border:1px solid rgba(255,64,96,0.2)">🔴 Badly Placed</span>
+        </div>`);
+    });
+  } catch (e) { console.warn('conflicts layer:', e.message); }
+
+  /* 4 — EV Stations */
+  try {
+    const d = await loadJSON('data/outputs/ev_stations.geojson');
+    counts.ev = d.features.length;
+    d.features.forEach(f => {
+      const ll = getCentroid(f);
+      if (!ll) return;
+      const p = f.properties;
+      makeCircle(ll, '#3d7fff', 10).bindPopup(`
+        <div class="lp-body">
+          <div class="lp-type" style="color:#3d7fff">⚡ EV Charging Station</div>
+          <div class="lp-name">Proposed Site #${p.rank || '?'}</div>
+          <div class="lp-row"><span class="lp-key">Score</span><span class="lp-val" style="color:#3d7fff;font-weight:600">${p.suitability_score || 0}/100</span></div>
+          <div class="lp-row"><span class="lp-key">Why</span><span class="lp-val">${p.reason || 'High suitability'}</span></div>
+          <div class="lp-divider"></div>
+          <span class="lp-tag" style="background:rgba(61,127,255,0.1);color:#3d7fff;border:1px solid rgba(61,127,255,0.2)">⚡ Smart Site</span>
+        </div>`).addTo(heroLayers.ev);
+    });
+  } catch (e) { console.warn('ev layer:', e.message); }
+
+  /* 5 — IoT Waste Hubs */
+  try {
+    const d = await loadJSON('data/outputs/waste_hubs.geojson');
+    counts.waste = d.features.length;
+    d.features.forEach(f => {
+      const ll = getCentroid(f);
+      if (!ll) return;
+      const p = f.properties;
+      makeCircle(ll, '#b060ff', 10).bindPopup(`
+        <div class="lp-body">
+          <div class="lp-type" style="color:#b060ff">🗑️ IoT Waste Hub</div>
+          <div class="lp-name">Proposed Site #${p.rank || '?'}</div>
+          <div class="lp-row"><span class="lp-key">Score</span><span class="lp-val" style="color:#b060ff;font-weight:600">${p.suitability_score || 0}/100</span></div>
+          <div class="lp-row"><span class="lp-key">Why</span><span class="lp-val">${p.reason || 'Near residential areas'}</span></div>
+          <div class="lp-divider"></div>
+          <span class="lp-tag" style="background:rgba(176,96,255,0.1);color:#b060ff;border:1px solid rgba(176,96,255,0.2)">🗑️ Smart Site</span>
+        </div>`).addTo(heroLayers.waste);
+    });
+  } catch (e) { console.warn('waste layer:', e.message); }
+
+  /* 6 — Green Corridors */
+  try {
+    const d = await loadJSON('data/outputs/green_corridors.geojson');
+    counts.green = d.features.length;
+    d.features.forEach(f => {
+      const ll = getCentroid(f);
+      if (!ll) return;
+      const p = f.properties;
+      makeCircle(ll, '#00e676', 10).bindPopup(`
+        <div class="lp-body">
+          <div class="lp-type" style="color:#00e676">🌿 Green Corridor</div>
+          <div class="lp-name">Proposed Site #${p.rank || '?'}</div>
+          <div class="lp-row"><span class="lp-key">Score</span><span class="lp-val" style="color:#00e676;font-weight:600">${p.suitability_score || 0}/100</span></div>
+          <div class="lp-row"><span class="lp-key">Why</span><span class="lp-val">${p.reason || 'Peripheral open land'}</span></div>
+          <div class="lp-divider"></div>
+          <span class="lp-tag" style="background:rgba(0,230,118,0.1);color:#00e676;border:1px solid rgba(0,230,118,0.2)">🌿 Smart Site</span>
+        </div>`).addTo(heroLayers.green);
+    });
+  } catch (e) { console.warn('green layer:', e.message); }
+
+  updateLayerCounts(counts);
+  heroMap.setView(OKARA, ZOOM);
+  hideLoading();
+}
+
+/* ──────────────────────────────────────
+   MINI MAP (intro section)
+────────────────────────────────────── */
+const miniMap = L.map('mini-map', {
+  zoomControl: false,
+  attributionControl: false,
+  scrollWheelZoom: false,
+  dragging: false,
+  doubleClickZoom: false,
+}).setView(OKARA, 12);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  maxZoom: 19, subdomains: 'abcd'
+}).addTo(miniMap);
+
+/* Okara city marker */
+L.circleMarker(OKARA, {
+  radius: 8,
+  color: '#00d4ff', weight: 2,
+  fillColor: '#00d4ff', fillOpacity: 0.8
+}).addTo(miniMap)
+  .bindTooltip('Okara City', { permanent: true, direction: 'top', className: 'mini-tooltip' });
+
+/* ──────────────────────────────────────
+   BOOT
+────────────────────────────────────── */
+window.addEventListener('load', async () => {
+  await initHeroLayers();
+  setTimeout(hideLoading, 2500);
+});
+
+/* Invalidate map on resize */
+window.addEventListener('resize', () => {
+  heroMap.invalidateSize();
+  miniMap.invalidateSize();
+}, { passive: true });
+</script>
+
+</body>
+</html>

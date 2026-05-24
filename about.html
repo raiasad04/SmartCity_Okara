@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>About & Team — Smart City Okara | Asad Bashir</title>
+<meta name="description" content="Meet the team behind the Smart City Okara GIS project — Asad Bashir (Lead Researcher), Syed Ahtesham (Co-researcher), and Supervisor Dr. Inam-ul-Haq. University of Okara, BS Remote Sensing & GIS."/>
+<meta name="keywords" content="Asad Bashir, Syed Ahtesham, Dr Inam ul Haq, University of Okara, BS Remote Sensing GIS, Smart City Team"/>
+<meta name="author" content="Asad Bashir"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="./about.html"/>
+<meta property="og:title" content="About & Team — Smart City Okara"/>
+<meta property="og:description" content="Meet the researchers and supervisor behind Okara's Smart City GIS analysis project."/>
+<meta property="og:type" content="website"/>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+<!-- Master stylesheet -->
+<link rel="stylesheet" href="style.css"/>
+
+<style>
+/* ═══════════════════════════════════════
+   ABOUT PAGE — PAGE-SPECIFIC STYLES
+═══════════════════════════════════════ */
+
+/* ── HERO ──────────────────────────────── */
+.about-hero {
+  padding-top: calc(var(--nav-height) + 5rem);
+  padding-bottom: 5rem;
+  background: var(--ink-deep);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 55% at 15% 40%, rgba(0,212,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 45% at 85% 60%, rgba(61,127,255,0.05) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* Diagonal grid lines */
+.about-hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 100%);
+}
+
+.about-hero .container { position: relative; z-index: 2; }
+
+.hero-overline {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: var(--font-mono); font-size: 0.68rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--cyan); margin-bottom: 1.25rem;
+  opacity: 0; animation: fadeUp 0.7s var(--ease-out) 0.1s both;
+}
+.hero-overline::before {
+  content: ''; display: block; width: 22px; height: 1px; background: var(--cyan);
+}
+
+.about-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800; letter-spacing: -0.025em; line-height: 1.08;
+  margin-bottom: 1.25rem;
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 0.25s both;
+}
+
+.about-hero p {
+  font-size: 1.05rem; color: var(--text-secondary);
+  max-width: 580px; line-height: 1.75; font-weight: 300;
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 0.4s both;
+}
+
+/* ── TEAM SECTION ─────────────────────── */
+.team-section {
+  padding: var(--sp-20) 0;
+  background: var(--ink-deep);
+}
+
+/* Lead researcher — full-width featured card */
+.lead-card {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  transition: border-color var(--dur-base) var(--ease),
+              box-shadow var(--dur-base) var(--ease);
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 0.1s both;
+}
+
+.lead-card:hover {
+  border-color: rgba(0,212,255,0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0,212,255,0.07);
+}
+
+/* Left avatar panel */
+.lead-avatar-panel {
+  background: linear-gradient(160deg, rgba(0,212,255,0.1) 0%, rgba(61,127,255,0.08) 100%);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  gap: 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.lead-avatar-panel::before {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,212,255,0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.avatar-ring {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,212,255,0.4);
+  padding: 4px;
+  background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0,212,255,0.2);
+}
+
+.avatar-ring::after {
+  content: '';
+  position: absolute; inset: -6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0,212,255,0.2);
+  animation: spinSlow 12s linear infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.avatar-initials {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--cyan);
+  line-height: 1;
+}
+
+.avatar-role-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 4px 12px;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.25);
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--cyan);
+  text-align: center;
+}
+
+.avatar-dept {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Right content panel */
+.lead-content {
+  padding: 2.5rem 2.5rem;
+}
+
+.lead-name {
+  font-family: var(--font-display);
+  font-size: 2rem; font-weight: 800;
+  color: var(--text-bright); margin-bottom: 0.3rem;
+  line-height: 1.1;
+}
+
+.lead-title {
+  font-family: var(--font-mono);
+  font-size: 0.68rem; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--cyan); margin-bottom: 1.25rem;
+}
+
+.lead-bio {
+  font-size: 0.92rem; color: var(--text-secondary);
+  line-height: 1.75; max-width: 620px;
+  margin-bottom: 1.75rem;
+}
+
+/* Skills / tags row */
+.skill-tags {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.skill-tag {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 4px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.skill-tag:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(0,212,255,0.06);
+}
+
+/* Contribution list */
+.contribution-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.contrib-item {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45;
+}
+
+.contrib-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  flex-shrink: 0;
+  margin-top: 0.4rem;
+}
+
+/* ── TEAM CARDS GRID (helper + supervisor) ── */
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.team-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  transition: all var(--dur-base) var(--ease);
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) both;
+}
+
+.team-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+
+.team-card.card-helper:hover   { border-color: rgba(176,96,255,0.35); }
+.team-card.card-supervisor:hover { border-color: rgba(255,179,0,0.35); }
+
+/* Top accent bar */
+.team-card-bar { height: 3px; }
+.card-helper   .team-card-bar { background: var(--purple); box-shadow: 0 0 12px rgba(176,96,255,0.4); }
+.card-supervisor .team-card-bar { background: var(--amber); box-shadow: 0 0 12px rgba(255,179,0,0.4); }
+
+.team-card-inner { padding: 2rem; }
+
+.team-card-header {
+  display: flex; align-items: flex-start;
+  gap: 1.25rem; margin-bottom: 1.5rem;
+}
+
+.team-avatar-sm {
+  width: 68px; height: 68px;
+  border-radius: var(--r-lg);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 1.4rem; font-weight: 800;
+  position: relative;
+}
+
+.card-helper   .team-avatar-sm { background: rgba(176,96,255,0.12); color: var(--purple); border: 1px solid rgba(176,96,255,0.2); }
+.card-supervisor .team-avatar-sm { background: rgba(255,179,0,0.10); color: var(--amber); border: 1px solid rgba(255,179,0,0.2); }
+
+.team-card-name {
+  font-family: var(--font-display);
+  font-size: 1.2rem; font-weight: 700;
+  color: var(--text-bright); margin-bottom: 0.25rem; line-height: 1.2;
+}
+
+.team-card-role {
+  font-family: var(--font-mono);
+  font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+.card-helper   .team-card-role { color: var(--purple); }
+.card-supervisor .team-card-role { color: var(--amber); }
+
+.team-card-dept {
+  font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;
+}
+
+.team-card-bio {
+  font-size: 0.85rem; color: var(--text-secondary);
+  line-height: 1.7; margin-bottom: 1.25rem;
+}
+
+.team-card-tags {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+
+.team-tag {
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid;
+}
+
+.card-helper   .team-tag { color: var(--purple); background: rgba(176,96,255,0.08); border-color: rgba(176,96,255,0.2); }
+.card-supervisor .team-tag { color: var(--amber); background: rgba(255,179,0,0.07); border-color: rgba(255,179,0,0.2); }
+
+/* ── PROJECT DETAILS SECTION ──────────────────── */
+.project-section {
+  padding: var(--sp-20) 0;
+  background: var(--ink);
+  position: relative;
+}
+
+.project-section::before {
+  content: '';
+  position: absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.3), transparent);
+}
+
+.project-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.project-detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 1.75rem 1.75rem;
+  transition: all var(--dur-base) var(--ease);
+  opacity: 0; animation: fadeUp 0.7s var(--ease-out) both;
+}
+
+.project-detail-card:hover {
+  border-color: rgba(0,212,255,0.2);
+  transform: translateY(-3px);
+}
+
+.pd-header {
+  display: flex; align-items: center; gap: 0.9rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.pd-icon {
+  width: 42px; height: 42px;
+  border-radius: var(--r-md);
+  background: var(--cyan-dim);
+  border: 1px solid rgba(0,212,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+
+.pd-title {
+  font-family: var(--font-display);
+  font-size: 1rem; font-weight: 700;
+  color: var(--text-bright); line-height: 1.2;
+}
+
+.pd-sub {
+  font-family: var(--font-mono);
+  font-size: 0.58rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.pd-row {
+  display: flex; align-items: flex-start;
+  gap: 0.9rem; padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.pd-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+.pd-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-muted);
+  width: 100px; flex-shrink: 0; margin-top: 1px;
+}
+
+.pd-value {
+  font-size: 0.85rem; color: var(--text-secondary);
+  line-height: 1.5; flex: 1;
+}
+
+.pd-value strong { color: var(--text-bright); font-weight: 600; }
+.pd-value.cyan   { color: var(--cyan); font-weight: 500; }
+.pd-value.green  { color: var(--green); }
+.pd-value.amber  { color: var(--amber); }
+
+/* ── DELIVERABLES SECTION ─────────────────────── */
+.deliverables-section {
+  padding: var(--sp-16) 0 var(--sp-20);
+  background: var(--ink-deep);
+}
+
+.deliverables-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.deliverable-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  transition: all var(--dur-base) var(--ease);
+  opacity: 0; animation: fadeUp 0.7s var(--ease-out) both;
+  cursor: default;
+}
+
+.deliverable-card:hover {
+  border-color: rgba(0,212,255,0.25);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+}
+
+.deliverable-icon {
+  font-size: 2rem; margin-bottom: 0.9rem;
+}
+
+.deliverable-title {
+  font-family: var(--font-display);
+  font-size: 0.88rem; font-weight: 700;
+  color: var(--text-bright); margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
+
+.deliverable-desc {
+  font-size: 0.72rem; color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ── TECH STACK SECTION ──────────────────────── */
+.tech-section {
+  padding: var(--sp-16) 0;
+  background: var(--ink);
+  position: relative;
+}
+
+.tech-section::before {
+  content: ''; position: absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+}
+
+.tech-stack-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.tech-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem 1.25rem;
+  opacity: 0; animation: fadeUp 0.6s var(--ease-out) both;
+  transition: all var(--dur-base) var(--ease);
+}
+
+.tech-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-bright);
+}
+
+.tech-phase {
+  font-family: var(--font-mono);
+  font-size: 0.58rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.tech-lang {
+  font-family: var(--font-display);
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--text-bright); margin-bottom: 0.3rem;
+}
+
+.tech-purpose {
+  font-family: var(--font-mono);
+  font-size: 0.62rem; color: var(--cyan);
+  letter-spacing: 0.08em; margin-bottom: 0.75rem;
+}
+
+.tech-desc {
+  font-size: 0.78rem; color: var(--text-muted); line-height: 1.55;
+}
+
+/* ── METHODOLOGY TIMELINE ─────────────────────── */
+.timeline-section {
+  padding: var(--sp-20) 0;
+  background: var(--ink-deep);
+}
+
+.timeline {
+  position: relative;
+  margin-top: 3rem;
+  padding-left: 2.5rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--cyan), rgba(0,212,255,0.1));
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 2.5rem;
+  opacity: 0; animation: fadeUp 0.7s var(--ease-out) both;
+}
+
+.timeline-item:last-child { padding-bottom: 0; }
+
+.timeline-dot {
+  position: absolute;
+  left: -2.5rem;
+  top: 4px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--dur-base) var(--ease);
+}
+
+.timeline-item.active .timeline-dot {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px rgba(0,212,255,0.5);
+}
+
+.timeline-dot-inner {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ink-deep);
+}
+
+.timeline-item.active .timeline-dot-inner { background: var(--ink-deep); }
+
+.timeline-header {
+  display: flex; align-items: center; gap: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+
+.timeline-step {
+  font-family: var(--font-mono);
+  font-size: 0.6rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+
+.timeline-title {
+  font-family: var(--font-display);
+  font-size: 1rem; font-weight: 700;
+  color: var(--text-bright);
+}
+
+.timeline-item.active .timeline-title { color: var(--cyan); }
+
+.timeline-desc {
+  font-size: 0.85rem; color: var(--text-secondary);
+  line-height: 1.7; max-width: 680px;
+}
+
+.timeline-tools {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.tool-chip {
+  padding: 2px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem; color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+/* ── UNIVERSITY BANNER ───────────────────────── */
+.university-banner {
+  padding: var(--sp-12) 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.university-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.university-left {
+  display: flex; align-items: center; gap: 1.5rem;
+}
+
+.university-logo {
+  width: 60px; height: 60px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(61,127,255,0.1));
+  border: 1px solid rgba(0,212,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; flex-shrink: 0;
+}
+
+.university-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--text-bright); margin-bottom: 0.2rem;
+}
+
+.university-dept {
+  font-family: var(--font-mono);
+  font-size: 0.62rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+
+.university-right {
+  display: flex; gap: 2rem; flex-wrap: wrap;
+}
+
+.uni-stat {
+  text-align: center;
+}
+
+.uni-stat-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem; font-weight: 800;
+  color: var(--cyan); line-height: 1;
+}
+
+.uni-stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.58rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* ── FOOTER ──────────────────────────────────── */
+.site-footer {
+  background: var(--ink);
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 0 1.75rem;
+}
+
+.footer-bottom-bar {
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 0.65rem; color: var(--text-muted);
+}
+
+.footer-nav { display: flex; gap: 1.5rem; }
+.footer-nav a {
+  font-size: 0.78rem; color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease);
+}
+.footer-nav a:hover { color: var(--cyan); }
+
+/* ── RESPONSIVE ──────────────────────────────── */
+@media (max-width: 1024px) {
+  .deliverables-grid  { grid-template-columns: repeat(3, 1fr); }
+  .tech-stack-grid    { grid-template-columns: repeat(2, 1fr); }
+  .project-details-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .lead-card          { grid-template-columns: 1fr; }
+  .lead-avatar-panel  { border-right: none; border-bottom: 1px solid var(--border); padding: 2rem; }
+  .lead-content       { padding: 1.75rem; }
+  .team-grid          { grid-template-columns: 1fr; }
+  .deliverables-grid  { grid-template-columns: repeat(2, 1fr); }
+  .tech-stack-grid    { grid-template-columns: 1fr; }
+  .contribution-list  { grid-template-columns: 1fr; }
+  .university-inner   { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .deliverables-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     NAVIGATION
+════════════════════════════════ -->
+<nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+  <a class="nav-logo" href="index.html" aria-label="Smart City Okara Home">
+    <div class="nav-logo-icon" aria-hidden="true">🏙️</div>
+    <div class="nav-logo-text">
+      <div class="nav-logo-title">Smart City Okara</div>
+      <div class="nav-logo-sub">BS RS&amp;GIS · Asad Bashir</div>
+    </div>
+  </a>
+  <div class="nav-links" role="list">
+    <a class="nav-link"        href="index.html"    role="listitem">Map</a>
+    <a class="nav-link"        href="features.html" role="listitem">Features</a>
+    <a class="nav-link"        href="compare.html"  role="listitem">Before / After</a>
+    <a class="nav-link active" href="about.html"    role="listitem">About</a>
+  </div>
+  <a class="nav-cta" href="index.html">View Live Map →</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<nav class="nav-mobile" id="nav-mobile" aria-label="Mobile navigation">
+  <a class="nav-link"        href="index.html">Map</a>
+  <a class="nav-link"        href="features.html">Features</a>
+  <a class="nav-link"        href="compare.html">Before / After</a>
+  <a class="nav-link active" href="about.html">About</a>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section class="about-hero" aria-labelledby="about-heading">
+  <div class="container">
+    <div class="hero-overline">
+      <span style="width:7px;height:7px;border-radius:50%;background:var(--cyan);display:inline-block" aria-hidden="true"></span>
+      University of Okara · BS Remote Sensing &amp; GIS
+    </div>
+    <h1 id="about-heading">
+      The Team Behind<br>
+      <span style="background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">
+        Okara's Smart City
+      </span>
+    </h1>
+    <p>
+      A final-year GIS research project conducted at the University of Okara —
+      combining remote sensing, spatial analysis, and web development to
+      produce a data-driven Smart City blueprint for Okara, Punjab, Pakistan.
+    </p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     TEAM
+════════════════════════════════ -->
+<section class="team-section" aria-labelledby="team-heading">
+  <div class="container">
+
+    <div class="section-header" style="margin-bottom:2.5rem">
+      <div class="overline">Research Team</div>
+      <h2 id="team-heading">Meet the People</h2>
+      <p>Three people made this project — a lead researcher, a co-researcher, and a supervising professor.</p>
+    </div>
+
+    <!-- ── LEAD RESEARCHER — ASAD BASHIR ── -->
+    <div class="lead-card" role="article" aria-label="Lead Researcher: Asad Bashir">
+
+      <div class="lead-avatar-panel">
+        <div class="avatar-ring">
+          <div class="avatar-initials">AB</div>
+        </div>
+        <div class="avatar-role-badge">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--cyan);display:inline-block" aria-hidden="true"></span>
+          Lead Researcher
+        </div>
+        <div class="avatar-dept">
+          BS Remote Sensing &amp; GIS<br>
+          University of Okara<br>
+          Punjab, Pakistan
+        </div>
+      </div>
+
+      <div class="lead-content">
+        <div class="lead-name">Asad Bashir</div>
+        <div class="lead-title">Lead Researcher · Final Year Project · BS RS&amp;GIS</div>
+
+        <p class="lead-bio">
+          Asad is the primary researcher and developer behind the Smart City Okara project.
+          He designed the full analysis pipeline — from raw OpenStreetMap data acquisition
+          through Python-based spatial processing, AHP-MCDA suitability scoring, and
+          interactive web dashboard development. The project represents his final-year
+          academic thesis at the University of Okara, combining GIS, data science, and
+          urban planning into a single cohesive deliverable.
+        </p>
+
+        <div class="skill-tags" role="list" aria-label="Technical skills">
+          <span class="skill-tag" role="listitem">Python · GeoPandas</span>
+          <span class="skill-tag" role="listitem">QGIS · Spatial SQL</span>
+          <span class="skill-tag" role="listitem">AHP-MCDA</span>
+          <span class="skill-tag" role="listitem">Leaflet.js</span>
+          <span class="skill-tag" role="listitem">HTML / CSS / JS</span>
+          <span class="skill-tag" role="listitem">OSMnx · PostGIS</span>
+          <span class="skill-tag" role="listitem">Buffer Analysis</span>
+          <span class="skill-tag" role="listitem">GeoJSON</span>
+          <span class="skill-tag" role="listitem">GitHub Pages</span>
+          <span class="skill-tag" role="listitem">Remote Sensing</span>
+        </div>
+
+        <div class="contribution-list" role="list" aria-label="Project contributions">
+          <div class="contrib-item" role="listitem">
+            <div class="contrib-dot" aria-hidden="true"></div>
+            <span>Designed full GIS analysis pipeline</span>
+          </div>
+          <div class="contrib-item" role="listitem">
+            <div class="contrib-dot" aria-hidden="true"></div>
+            <span>Wrote all Python scripts (4 phases)</span>
+          </div>
+          <div class="contrib-item" role="listitem">
+            <div class="contrib-dot" aria-hidden="true"></div>
+            <span>Conducted AHP-MCDA suitability scoring</span>
+          </div>
+          <div class="contrib-item" role="listitem">
+            <div class="contrib-dot" aria-hidden="true"></div>
+            <span>Built interactive web dashboard</span>
+          </div>
+          <div class="contrib-item" role="listitem">
+            <div class="contrib-dot" aria-hidden="true"></div>
+            <span>Performed 500m buffer conflict analysis</span>
+          </div>
+          <div class="contrib-item" role="listitem">
+            <div class="contrib-dot" aria-hidden="true"></div>
+            <span>Authored technical thesis documentation</span>
+          </div>
+          <div class="contrib-item" role="listitem">
+            <div class="contrib-dot" aria-hidden="true"></div>
+            <span>Generated cartographic PDF maps in QGIS</span>
+          </div>
+          <div class="contrib-item" role="listitem">
+            <div class="contrib-dot" aria-hidden="true"></div>
+            <span>Deployed live dashboard on GitHub Pages</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /lead-card -->
+
+    <!-- ── HELPER + SUPERVISOR CARDS ── -->
+    <div class="team-grid">
+
+      <!-- Syed Ahtesham — Helper -->
+      <div class="team-card card-helper" role="article" aria-label="Co-researcher: Syed Ahtesham" style="animation-delay:0.15s">
+        <div class="team-card-bar"></div>
+        <div class="team-card-inner">
+          <div class="team-card-header">
+            <div class="team-avatar-sm">SA</div>
+            <div>
+              <div class="team-card-name">Syed Ahtesham</div>
+              <div class="team-card-role">Co-Researcher &amp; Project Helper</div>
+              <div class="team-card-dept">BS Remote Sensing &amp; GIS<br>University of Okara</div>
+            </div>
+          </div>
+          <p class="team-card-bio">
+            Syed Ahtesham contributed as co-researcher and project helper throughout the
+            analysis workflow. He assisted with data collection, spatial layer preparation,
+            QGIS map production, and quality review of the GeoJSON outputs. His support
+            was instrumental in validating the conflict detection results and cross-checking
+            the AHP suitability scores against field-level knowledge of Okara City.
+          </p>
+          <div class="team-card-tags">
+            <span class="team-tag">Data Collection</span>
+            <span class="team-tag">QGIS Mapping</span>
+            <span class="team-tag">Layer Validation</span>
+            <span class="team-tag">Field Knowledge</span>
+            <span class="team-tag">Map Review</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dr. Inam-ul-Haq — Supervisor -->
+      <div class="team-card card-supervisor" role="article" aria-label="Project Supervisor: Dr. Inam-ul-Haq" style="animation-delay:0.25s">
+        <div class="team-card-bar"></div>
+        <div class="team-card-inner">
+          <div class="team-card-header">
+            <div class="team-avatar-sm">IH</div>
+            <div>
+              <div class="team-card-name">Dr. Inam-ul-Haq</div>
+              <div class="team-card-role">Project Supervisor</div>
+              <div class="team-card-dept">Department of Remote Sensing &amp; GIS<br>University of Okara</div>
+            </div>
+          </div>
+          <p class="team-card-bio">
+            Dr. Inam-ul-Haq supervised the project from proposal to final submission,
+            providing academic guidance on GIS methodology, AHP-MCDA framework design,
+            and thesis structure. His expertise in Remote Sensing and Spatial Sciences
+            ensured the analysis met academic rigour, with valid Consistency Ratios
+            and defensible spatial criteria weighting throughout.
+          </p>
+          <div class="team-card-tags">
+            <span class="team-tag">Project Supervision</span>
+            <span class="team-tag">GIS Methodology</span>
+            <span class="team-tag">AHP Validation</span>
+            <span class="team-tag">Thesis Guidance</span>
+            <span class="team-tag">Academic Review</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /team-grid -->
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     PROJECT DETAILS
+════════════════════════════════ -->
+<section class="project-section" aria-labelledby="project-heading">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="overline">Project Specifications</div>
+      <h2 id="project-heading">Full Project Details</h2>
+      <p>Technical specifications, study area parameters, data sources, and methodology summary.</p>
+    </div>
+
+    <div class="project-details-grid">
+
+      <!-- Study Info -->
+      <div class="project-detail-card" style="animation-delay:0.1s">
+        <div class="pd-header">
+          <div class="pd-icon" aria-hidden="true">📋</div>
+          <div>
+            <div class="pd-title">Study Information</div>
+            <div class="pd-sub">Project Identity</div>
+          </div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Project</div>
+          <div class="pd-value"><strong>Smart City Suitability Analysis</strong></div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Study Area</div>
+          <div class="pd-value"><strong>Okara City</strong>, Punjab, Pakistan</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">University</div>
+          <div class="pd-value"><strong>University of Okara</strong></div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Department</div>
+          <div class="pd-value">BS Remote Sensing &amp; GIS</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Researcher</div>
+          <div class="pd-value cyan">Asad Bashir</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Supervisor</div>
+          <div class="pd-value">Dr. Inam-ul-Haq</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Co-Researcher</div>
+          <div class="pd-value">Syed Ahtesham</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Year</div>
+          <div class="pd-value">2025</div>
+        </div>
+      </div>
+
+      <!-- Technical Specs -->
+      <div class="project-detail-card" style="animation-delay:0.2s">
+        <div class="pd-header">
+          <div class="pd-icon" aria-hidden="true">⚙️</div>
+          <div>
+            <div class="pd-title">Technical Specifications</div>
+            <div class="pd-sub">GIS Parameters</div>
+          </div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">CRS</div>
+          <div class="pd-value cyan"><strong>EPSG:32642</strong> — UTM Zone 42N</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Units</div>
+          <div class="pd-value">Metres (distance calculations)</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Data Source</div>
+          <div class="pd-value"><strong>OpenStreetMap</strong> via OSMnx API</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Buffer Dist.</div>
+          <div class="pd-value">500m safety zone radius</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Method</div>
+          <div class="pd-value"><strong>AHP-MCDA</strong> (Saaty, 1980)</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">CR Threshold</div>
+          <div class="pd-value green">&lt; 0.10 (all weights validated)</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Output Format</div>
+          <div class="pd-value">GeoJSON (EPSG:4326 for web)</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Hosting</div>
+          <div class="pd-value">GitHub Pages (static)</div>
+        </div>
+      </div>
+
+      <!-- Results Summary -->
+      <div class="project-detail-card" style="animation-delay:0.3s">
+        <div class="pd-header">
+          <div class="pd-icon" aria-hidden="true">📊</div>
+          <div>
+            <div class="pd-title">Analysis Results</div>
+            <div class="pd-sub">Key Numbers</div>
+          </div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Protected</div>
+          <div class="pd-value amber"><strong>31</strong> sensitive locations mapped</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Conflicts</div>
+          <div class="pd-value" style="color:var(--red)"><strong>5</strong> badly-placed facilities</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Safe Zones</div>
+          <div class="pd-value green"><strong>155</strong> validated relocation areas</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">EV Sites</div>
+          <div class="pd-value" style="color:var(--blue)"><strong>5</strong> top-ranked locations</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Waste Hubs</div>
+          <div class="pd-value" style="color:var(--purple)"><strong>5</strong> top-ranked locations</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Green Sites</div>
+          <div class="pd-value green"><strong>5</strong> top-ranked locations</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Total Sites</div>
+          <div class="pd-value cyan"><strong>15</strong> smart city sites proposed</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">AHP Score</div>
+          <div class="pd-value">0–100 per candidate zone</div>
+        </div>
+      </div>
+
+      <!-- Study Area -->
+      <div class="project-detail-card" style="animation-delay:0.4s">
+        <div class="pd-header">
+          <div class="pd-icon" aria-hidden="true">📍</div>
+          <div>
+            <div class="pd-title">Study Area</div>
+            <div class="pd-sub">Okara City, Punjab</div>
+          </div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">City</div>
+          <div class="pd-value"><strong>Okara</strong>, Punjab, Pakistan</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Coordinates</div>
+          <div class="pd-value cyan">30.81°N, 73.45°E</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Population</div>
+          <div class="pd-value">~360,000 (urban area)</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Province</div>
+          <div class="pd-value">Punjab, Pakistan</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">OSM Roads</div>
+          <div class="pd-value">Downloaded via OSMnx API</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">OSM Buildings</div>
+          <div class="pd-value">Downloaded via OSMnx features</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Amenities</div>
+          <div class="pd-value">Schools, hospitals, fuel, markets, bus stops</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-label">Land Use</div>
+          <div class="pd-value">Industrial, commercial, residential</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     DELIVERABLES
+════════════════════════════════ -->
+<section class="deliverables-section" aria-labelledby="deliverables-heading">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="overline">Final Submission Package</div>
+      <h2 id="deliverables-heading">Project Deliverables</h2>
+      <p>Five deliverables submitted as the final year project package.</p>
+    </div>
+
+    <div class="deliverables-grid" role="list">
+
+      <div class="deliverable-card" role="listitem" style="animation-delay:0.05s">
+        <div class="deliverable-icon" aria-hidden="true">📄</div>
+        <div class="deliverable-title">Technical Thesis</div>
+        <div class="deliverable-desc">Full academic report covering methodology, results, discussion and conclusion chapters following university format.</div>
+      </div>
+
+      <div class="deliverable-card" role="listitem" style="animation-delay:0.10s">
+        <div class="deliverable-icon" aria-hidden="true">🌐</div>
+        <div class="deliverable-title">Live Web Dashboard</div>
+        <div class="deliverable-desc">This interactive dashboard hosted on GitHub Pages — map, features, before/after comparison, and about pages.</div>
+      </div>
+
+      <div class="deliverable-card" role="listitem" style="animation-delay:0.15s">
+        <div class="deliverable-icon" aria-hidden="true">💾</div>
+        <div class="deliverable-title">Source Code</div>
+        <div class="deliverable-desc">GitHub repository containing all 4 Python scripts, GeoJSON datasets, HTML/CSS/JS web files, and documentation.</div>
+      </div>
+
+      <div class="deliverable-card" role="listitem" style="animation-delay:0.20s">
+        <div class="deliverable-icon" aria-hidden="true">🗺️</div>
+        <div class="deliverable-title">Cartographic Maps</div>
+        <div class="deliverable-desc">4 high-resolution PDF maps: Conflict Analysis, Smart City Layout, Before/After Comparison, and Safe Zone Suitability.</div>
+      </div>
+
+      <div class="deliverable-card" role="listitem" style="animation-delay:0.25s">
+        <div class="deliverable-icon" aria-hidden="true">📦</div>
+        <div class="deliverable-title">GeoJSON Datasets</div>
+        <div class="deliverable-desc">10 GeoJSON output files in EPSG:4326 — all conflict zones, smart sites, safe zones, and sensitive locations.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     TECH STACK
+════════════════════════════════ -->
+<section class="tech-section" aria-labelledby="tech-heading">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="overline">Tools &amp; Technologies</div>
+      <h2 id="tech-heading">The Tech Stack</h2>
+      <p>Every language, library and tool used across the four project phases.</p>
+    </div>
+
+    <div class="tech-stack-grid" role="list">
+
+      <div class="tech-card" role="listitem" style="animation-delay:0.05s">
+        <div class="tech-phase">Phase 1–2 · Data &amp; Analysis</div>
+        <div class="tech-lang">Python</div>
+        <div class="tech-purpose">GeoPandas · OSMnx · Shapely · NumPy</div>
+        <div class="tech-desc">Downloads OSM data, reprojects to EPSG:32642, performs buffer analysis, runs AHP-MCDA scoring, exports GeoJSON.</div>
+      </div>
+
+      <div class="tech-card" role="listitem" style="animation-delay:0.10s">
+        <div class="tech-phase">Phase 2 · Spatial Queries</div>
+        <div class="tech-lang">SQL / PostGIS</div>
+        <div class="tech-purpose">Spatial SQL · ST_DWithin · ST_Distance</div>
+        <div class="tech-desc">Instantly filters badly-placed facilities using spatial queries. ST_DWithin replaces slow Python loops for proximity detection.</div>
+      </div>
+
+      <div class="tech-card" role="listitem" style="animation-delay:0.15s">
+        <div class="tech-phase">Phase 3 · Cartography</div>
+        <div class="tech-lang">QGIS</div>
+        <div class="tech-purpose">Graphical Modeler · Print Layout · PDF Export</div>
+        <div class="tech-desc">Loads GeoJSON outputs, applies cartographic styling, and exports four high-resolution A3 maps for the thesis submission.</div>
+      </div>
+
+      <div class="tech-card" role="listitem" style="animation-delay:0.20s">
+        <div class="tech-phase">Phase 4 · Web Dashboard</div>
+        <div class="tech-lang">JavaScript</div>
+        <div class="tech-purpose">Leaflet.js · GeoJSON · Swipe Divider</div>
+        <div class="tech-desc">Powers the interactive map, before/after swipe comparison, layer toggles, satellite view, and marker popups.</div>
+      </div>
+
+      <div class="tech-card" role="listitem" style="animation-delay:0.25s">
+        <div class="tech-phase">Phase 4 · Frontend</div>
+        <div class="tech-lang">HTML / CSS</div>
+        <div class="tech-purpose">CSS Custom Properties · Flexbox · Grid</div>
+        <div class="tech-desc">Responsive, SEO-optimised multi-page dashboard. Dark GIS aesthetic using Syne + DM Sans + JetBrains Mono typefaces.</div>
+      </div>
+
+      <div class="tech-card" role="listitem" style="animation-delay:0.30s">
+        <div class="tech-phase">Data Source</div>
+        <div class="tech-lang">OpenStreetMap</div>
+        <div class="tech-purpose">OSMnx API · Features · Road Network</div>
+        <div class="tech-desc">Free, open geographic data for Okara City — buildings, roads, amenities, land use. Downloaded and standardised via OSMnx.</div>
+      </div>
+
+      <div class="tech-card" role="listitem" style="animation-delay:0.35s">
+        <div class="tech-phase">Version Control</div>
+        <div class="tech-lang">GitHub</div>
+        <div class="tech-purpose">Git · GitHub Pages · Repository</div>
+        <div class="tech-desc">Full source code hosted on GitHub. Dashboard deployed as a static site via GitHub Pages — free, fast, always-online.</div>
+      </div>
+
+      <div class="tech-card" role="listitem" style="animation-delay:0.40s">
+        <div class="tech-phase">Satellite Imagery</div>
+        <div class="tech-lang">Esri / GEE</div>
+        <div class="tech-purpose">Esri World Imagery · Google Earth Engine</div>
+        <div class="tech-desc">Satellite basemap layer in the Before/After comparison page. GEE used for NDVI and NDBI analysis of Okara's land cover.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     METHODOLOGY TIMELINE
+════════════════════════════════ -->
+<section class="timeline-section" aria-labelledby="timeline-heading">
+  <div class="container container-sm">
+
+    <div class="section-header">
+      <div class="overline">Research Workflow</div>
+      <h2 id="timeline-heading">Project Timeline</h2>
+      <p>The four-phase pipeline from raw OSM data to a live published Smart City dashboard.</p>
+    </div>
+
+    <div class="timeline" role="list">
+
+      <div class="timeline-item active" role="listitem" style="animation-delay:0.05s">
+        <div class="timeline-dot"><div class="timeline-dot-inner"></div></div>
+        <div class="timeline-header">
+          <span class="timeline-step">Phase 01</span>
+          <div class="timeline-title">Data Acquisition &amp; Pre-processing</div>
+        </div>
+        <div class="timeline-desc">
+          OpenStreetMap data for Okara City downloaded using Python OSMnx — road networks,
+          building footprints, amenities (schools, hospitals, fuel, markets, bus stops),
+          and land-use polygons. All datasets reprojected to EPSG:32642 (UTM Zone 42N)
+          for accurate metre-based distance calculations.
+        </div>
+        <div class="timeline-tools">
+          <span class="tool-chip">Python</span>
+          <span class="tool-chip">OSMnx</span>
+          <span class="tool-chip">GeoPandas</span>
+          <span class="tool-chip">EPSG:32642</span>
+          <span class="tool-chip">GeoPackage</span>
+        </div>
+      </div>
+
+      <div class="timeline-item active" role="listitem" style="animation-delay:0.12s">
+        <div class="timeline-dot"><div class="timeline-dot-inner"></div></div>
+        <div class="timeline-header">
+          <span class="timeline-step">Phase 02</span>
+          <div class="timeline-title">Conflict Detection via Buffer Analysis</div>
+        </div>
+        <div class="timeline-desc">
+          500-metre safety buffers generated around all 31 sensitive locations (schools,
+          hospitals, clinics, colleges). Spatial intersection used to identify facilities
+          — fuel stations, marketplaces, and bus terminals — falling inside any buffer.
+          Five conflict zones confirmed with reasons and relocation solutions assigned.
+        </div>
+        <div class="timeline-tools">
+          <span class="tool-chip">Buffer Analysis</span>
+          <span class="tool-chip">Spatial SQL</span>
+          <span class="tool-chip">ST_DWithin</span>
+          <span class="tool-chip">GeoPandas</span>
+          <span class="tool-chip">GeoJSON export</span>
+        </div>
+      </div>
+
+      <div class="timeline-item active" role="listitem" style="animation-delay:0.19s">
+        <div class="timeline-dot"><div class="timeline-dot-inner"></div></div>
+        <div class="timeline-header">
+          <span class="timeline-step">Phase 03</span>
+          <div class="timeline-title">AHP-MCDA Suitability Scoring</div>
+        </div>
+        <div class="timeline-desc">
+          Analytic Hierarchy Process applied to score every candidate residential zone
+          0–100 across multiple weighted criteria. EV stations weighted by road proximity
+          (50%), city centre access (30%), and safety (20%). Waste hubs by residential
+          proximity (60%) and road access (40%). Green corridors by peripheral location
+          (60%) and open land (40%). Top 5 sites identified per category.
+        </div>
+        <div class="timeline-tools">
+          <span class="tool-chip">AHP</span>
+          <span class="tool-chip">MCDA</span>
+          <span class="tool-chip">NumPy</span>
+          <span class="tool-chip">Pandas</span>
+          <span class="tool-chip">CR &lt; 0.10</span>
+        </div>
+      </div>
+
+      <div class="timeline-item active" role="listitem" style="animation-delay:0.26s">
+        <div class="timeline-dot"><div class="timeline-dot-inner"></div></div>
+        <div class="timeline-header">
+          <span class="timeline-step">Phase 04</span>
+          <div class="timeline-title">Cartographic Maps &amp; Web Dashboard</div>
+        </div>
+        <div class="timeline-desc">
+          All GeoJSON outputs converted to EPSG:4326 for web rendering and loaded into
+          QGIS for four high-resolution cartographic PDF maps. This interactive web
+          dashboard built with Leaflet.js, featuring Before/After swipe comparison,
+          layer toggles, satellite view, and popup detail panels. Deployed on GitHub Pages.
+        </div>
+        <div class="timeline-tools">
+          <span class="tool-chip">QGIS</span>
+          <span class="tool-chip">Leaflet.js</span>
+          <span class="tool-chip">HTML/CSS/JS</span>
+          <span class="tool-chip">GeoJSON</span>
+          <span class="tool-chip">GitHub Pages</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     UNIVERSITY BANNER
+════════════════════════════════ -->
+<div class="university-banner" role="region" aria-label="University information">
+  <div class="container">
+    <div class="university-inner">
+      <div class="university-left">
+        <div class="university-logo" aria-hidden="true">🎓</div>
+        <div>
+          <div class="university-name">University of Okara</div>
+          <div class="university-dept">Department of Remote Sensing &amp; Geographic Information Systems</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.3rem">Okara, Punjab, Pakistan</div>
+        </div>
+      </div>
+      <div class="university-right">
+        <div class="uni-stat">
+          <div class="uni-stat-num">4</div>
+          <div class="uni-stat-lbl">PDF Maps</div>
+        </div>
+        <div class="uni-stat">
+          <div class="uni-stat-num">4</div>
+          <div class="uni-stat-lbl">Python Scripts</div>
+        </div>
+        <div class="uni-stat">
+          <div class="uni-stat-num">10</div>
+          <div class="uni-stat-lbl">GeoJSON Files</div>
+        </div>
+        <div class="uni-stat">
+          <div class="uni-stat-num">4</div>
+          <div class="uni-stat-lbl">Web Pages</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ════════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-bottom-bar">
+      <div class="footer-copy">
+        © 2025 Asad Bashir · BS Remote Sensing &amp; GIS · University of Okara, Pakistan
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="index.html">Map</a>
+        <a href="features.html">Features</a>
+        <a href="compare.html">Before / After</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+/* ── NAV ─────────────────────────────────── */
+const mainNav    = document.getElementById('main-nav');
+const hamburger  = document.getElementById('nav-hamburger');
+const mobileMenu = document.getElementById('nav-mobile');
+
+window.addEventListener('scroll', () =>
+  mainNav.classList.toggle('scrolled', window.scrollY > 30), { passive: true });
+
+hamburger.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open', open);
+  hamburger.setAttribute('aria-expanded', String(open));
+});
+
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+  });
+});
+
+/* ── SCROLL REVEAL ──────────────────────── */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll(
+  '.team-card, .project-detail-card, .deliverable-card, .tech-card, .timeline-item'
+).forEach(el => revealObs.observe(el));
+</script>
+
+</body>
+</html>
