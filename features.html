@@ -32,16 +32,16 @@
   content: '';
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 55% 60% at 80% 20%, rgba(0,212,255,0.07) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(61,127,255,0.05) 0%, transparent 60%);
+    radial-gradient(ellipse 55% 60% at 80% 20%, rgba(8,145,178,0.05) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(37,99,235,0.04) 0%, transparent 60%);
   pointer-events: none;
 }
 .features-hero::after {
   content: '';
   position: absolute; inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
   mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
@@ -81,13 +81,13 @@
   border: 1px solid var(--border); background: var(--surface);
   color: var(--text-secondary); transition: all var(--dur-fast) var(--ease);
 }
-.filter-tab:hover { border-color: var(--border-bright); color: var(--text-bright); }
-.filter-tab.active { color: var(--ink-deep); border-color: transparent; }
-.filter-tab[data-filter="all"].active    { background: var(--cyan);   box-shadow: 0 0 20px rgba(0,212,255,0.35); }
-.filter-tab[data-filter="conflict"].active{ background: var(--red);   box-shadow: 0 0 20px rgba(255,64,96,0.35); }
-.filter-tab[data-filter="ev"].active     { background: var(--blue);   box-shadow: 0 0 20px rgba(61,127,255,0.35); }
-.filter-tab[data-filter="waste"].active  { background: var(--purple); box-shadow: 0 0 20px rgba(176,96,255,0.35); }
-.filter-tab[data-filter="green"].active  { background: var(--green);  box-shadow: 0 0 20px rgba(0,230,118,0.35); }
+.filter-tab:hover { border-color: var(--border-bright); color: var(--text-primary); background: var(--surface-2); }
+.filter-tab.active { color: #ffffff; border-color: transparent; }
+.filter-tab[data-filter="all"].active    { background: var(--cyan);   box-shadow: 0 0 20px rgba(8,145,178,0.3); }
+.filter-tab[data-filter="conflict"].active{ background: var(--red);   box-shadow: 0 0 20px rgba(220,38,38,0.3); }
+.filter-tab[data-filter="ev"].active     { background: var(--blue);   box-shadow: 0 0 20px rgba(37,99,235,0.3); }
+.filter-tab[data-filter="waste"].active  { background: var(--purple); box-shadow: 0 0 20px rgba(124,58,237,0.3); }
+.filter-tab[data-filter="green"].active  { background: var(--green);  box-shadow: 0 0 20px rgba(5,150,105,0.3); }
 .tab-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
 /* Summary strip */
@@ -162,16 +162,16 @@
 }
 .why-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
 .solution-block {
-  background: rgba(0,230,118,0.05);
-  border: 1px solid rgba(0,230,118,0.15);
+  background: rgba(5,150,105,0.08);
+  border: 1px solid rgba(5,150,105,0.2);
   border-radius: var(--r-md); padding: 0.9rem 1rem;
 }
 .solution-label {
   font-family: var(--font-mono); font-size: 0.58rem;
   letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--green); margin-bottom: 0.4rem; font-weight: 500;
+  color: #059669; margin-bottom: 0.4rem; font-weight: 500;
 }
-.solution-text { font-size: 0.82rem; color: rgba(200,240,210,0.8); line-height: 1.6; }
+.solution-text { font-size: 0.82rem; color: #1f2937; line-height: 1.6; }
 .score-section { display: flex; flex-direction: column; gap: 0.5rem; }
 .score-header { display: flex; align-items: center; justify-content: space-between; }
 .score-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); }
@@ -907,7 +907,7 @@ async function initAll() {
       const emoji = p.type==='Fuel Station'?'⛽':p.type==='Marketplace'?'🛒':'🚌';
       const name  = p.name||p.type||'Conflict Zone';
       mkCircle(ll,'#ff4060',11).addTo(fLayers.conflict)
-        .bindPopup(`<div class="lp-body"><div class="lp-type" style="color:#ff4060">${emoji} Conflict Zone</div><div class="lp-name">${name}</div><div class="lp-row"><span class="lp-key">Problem</span><span class="lp-val">${p.reason||'Within 500m'}</span></div><div class="lp-divider"></div><div class="lp-row"><span class="lp-key">Solution</span><span class="lp-val" style="color:#00e676">${p.solution||'Relocate'}</span></div></div>`);
+        .bindPopup(`<div class="lp-body"><div class="lp-type" style="color:#ff4060">${emoji} Conflict Zone</div><div class="lp-name">${name}</div><div class="lp-row"><span class="lp-key">Problem</span><span class="lp-val">${p.reason||'Within 500m'}</span></div><div class="lp-divider"></div><div class="lp-row"><span class="lp-key">Solution</span><span class="lp-val" style="color:#059669">${p.solution||'Relocate'}</span></div></div>`);
       L.circleMarker(ll,{radius:20,color:'#ff4060',weight:1.5,fillOpacity:0,opacity:0.25}).addTo(fLayers.conflict);
 
       /* detailed conflict card */
